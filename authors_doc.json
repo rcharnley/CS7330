@@ -1,0 +1,12 @@
+{
+    "Authors":[
+        {
+            "_id": "AuthorID1",
+            "Last Name": "LastName",
+            "First Name": "FirstName",
+            "Affiliation": "Company1",
+            "Start Employer Date": "Date1",
+            "End Employer Date": "None"
+        }
+    ]
+}
