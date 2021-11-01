@@ -4,9 +4,35 @@
             "_id": "AuthorID1",
             "Last Name": "LastName",
             "First Name": "FirstName",
-            "Affiliation": "Company1",
-            "Start Employer Date": "Date1",
-            "End Employer Date": "None"
+            "Affiliation": [
+            {
+                "Name": "Company1",
+                "Start Date": "Start Date1",
+                "End Date": "End Date1"
+            },
+            {
+                "Name": "Company2",
+                "Start Date": "Start Date1",
+                "End Date": ""
+            }
+        ]
+        },
+        {
+            "_id": "AuthorID2",
+            "Last Name": "LastName",
+            "First Name": "FirstName",
+            "Affiliation": [
+                {
+                    "Name": "Company2",
+                    "Start Date": "Start Date1",
+                    "End Date": "End Date1"
+                },
+                {
+                    "Name": "Company3",
+                    "Start Date": "Start Date1",
+                    "End Date": ""
+                }
+            ]
         }
     ]
 }

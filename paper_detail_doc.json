@@ -1,12 +1,11 @@
 {
     "Title":"Title1",
     "Authors":[
-
         "AuthorID1",
         "AuthorID2",
         "AuthorID3",
         "etc."
-    
-    ]
-    
+    ],
+    "URL": "URL",
+    "Page Number": "Page#"
 }
