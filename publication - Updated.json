@@ -1,0 +1,47 @@
+{
+    "Publication":[
+    {
+        "Name": "Conference1",
+        "Papers": ["Paper1", "Paper2", "Paper5"],
+        "conference_info": [
+            {
+                "Iteration": "17th",
+                "Year": 2021,
+                "Location": "Location1"
+            },
+            {
+                "Iteration": "16th",
+                "Year": 2021,
+                "Location": "Location1"
+            },
+            {
+                "Iteration": "15th",
+                "Year": 2021,
+                "Location": "Location2"
+            }
+            ]            
+        },
+        {
+            "Name": "Journal1",
+            "Papers": ["Paper6"],
+            "journal_info": [
+                {
+                    "Publish Year": 2021,
+                    "Publish Month": 10,
+                    "Volume#": ""
+                }
+            ]
+        },
+        {
+            "Name": "Journal2",
+            "Papers": ["Paper7"],
+            "journal_info": [
+                {
+                    "Publish Year": 2021,
+                    "Publish Month": 1,
+                    "Volume#": "11"
+                }
+            ] 
+        }
+    ]
+}

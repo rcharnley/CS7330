@@ -1,0 +1,38 @@
+{
+    "Authors":[
+        {
+            "Last Name": "LastName",
+            "First Name": "FirstName",
+            "Affiliation": [
+            {
+                "Name": "Company1",
+                "Start Date": "Start Date1",
+                "End Date": "End Date1"
+            },
+            {
+                "Name": "Company2",
+                "Start Date": "Start Date1",
+                "End Date": ""
+            }
+        ],
+            "Papers":["Paper1", "Paper2"]
+        },
+        {
+            "Last Name": "LastName",
+            "First Name": "FirstName",
+            "Affiliation": [
+                {
+                    "Name": "Company2",
+                    "Start Date": "Start Date1",
+                    "End Date": "End Date1"
+                },
+                {
+                    "Name": "Company3",
+                    "Start Date": "Start Date1",
+                    "End Date": ""
+                }
+            ],
+            "Papers":["Paper2", "Paper3"]
+        }
+    ]
+}

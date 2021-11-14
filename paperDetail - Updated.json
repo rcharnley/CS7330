@@ -1,0 +1,17 @@
+{
+    "Papers":[
+        {
+            "Title":"Paper1",
+            "Authors":["First Last1", "First Last2"],
+            "URL": "URL",
+            "Page Number": "Page#",
+            "Publication": ["Conference1", "Conference2"]
+        },
+        {
+            "Title":"Paper2",
+            "Authors":["First Last1", "First Last2"],
+            "URL": "URL",
+            "Page Number": "Page#"
+        }
+    ]
+}
