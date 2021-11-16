@@ -1,8 +1,8 @@
 {
     "Authors":[
         {
-            "Last Name": "LastName",
-            "First Name": "FirstName",
+            "Last Name": "Jones",
+            "First Name": "Bob",
             "Affiliation": [
             {
                 "Name": "Company1",
@@ -18,8 +18,8 @@
             "Papers":["Paper1", "Paper2"]
         },
         {
-            "Last Name": "LastName",
-            "First Name": "FirstName",
+            "Last Name": "Doe",
+            "First Name": "Jane",
             "Affiliation": [
                 {
                     "Name": "Company2",
