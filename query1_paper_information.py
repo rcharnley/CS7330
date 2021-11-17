@@ -12,7 +12,7 @@ db = client.get_database(database_name)
 papers_collection = db.get_collection(papers_collection_name)
 publication_collection = db.get_collection(publication_collection_name)
 
-# query
+# query a paper title
 def query_paper(paper):
 
     # query the title of the paper and return the base information
