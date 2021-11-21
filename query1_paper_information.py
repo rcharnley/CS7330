@@ -1,10 +1,10 @@
 from pymongo import MongoClient
 
 # parameter setting
-connection_string = "mongodb://localhost:27017/mydatabase"
-database_name = "mydatabase"
+connection_string = "mongodb+srv://mwisniewski:nzMIpgjB96hUS2vO@cluster0.817yp.mongodb.net/Cluster0?retryWrites=true&w=majority"
+database_name = "ProjectCS7330"
 papers_collection_name = "Papers"
-publication_collection_name = "Publication"
+publication_collection_name = "Publications"
 
 # connection protocol
 client = MongoClient(connection_string)

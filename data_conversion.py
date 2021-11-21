@@ -2,25 +2,15 @@ from pymongo import MongoClient
 import pandas as pd
 import csv
 
-myclient = MongoClient("mongodb://localhost:27017/")
-mydb = myclient["mydatabase"]
-mycol = mydb["Authors"]
+# parameter setting
+connection_string = "mongodb+srv://mwisniewski:nzMIpgjB96hUS2vO@cluster0.817yp.mongodb.net/Cluster0?retryWrites=true&w=majority"
+database_name = "ProjectCS7330"
+authors_collection_name = "Authors"
 
-mydict = {
-    "Last Name": "Jones",
-    "First Name": "Bob",
-    "Affiliation": [{
-        "Name": "Company1",
-        "Start Date": "Start Date1",
-        "End Date": "End Date1"
-    }, {
-        "Name": "Company2",
-        "Start Date": "Start Date1",
-        "End Date": ""
-    }],
-    "Papers": ["Paper1", "Paper2"]
-}
-
+# connection protocol
+myclient = MongoClient(connection_string)
+mydb = myclient[database_name]
+mycol = mydb[authors_collection_name]
 
 
 def _convert_to_json(filename):
@@ -67,5 +57,6 @@ def _convert_to_json(filename):
 
 test_dict = _convert_to_json("16NovExtraction/conferences.csv")
 
+# upload
 for author in test_dict["Authors"]:
     x = mycol.insert_one(author)
