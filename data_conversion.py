@@ -13,7 +13,7 @@ mydb = myclient[database_name]
 mycol = mydb[authors_collection_name]
 
 
-def _convert_to_json(filename):
+def _author_load(filename):
     authors_dict = {"Authors":[]}
     
     with open(filename, "r") as temp_f:
@@ -30,22 +30,33 @@ def _convert_to_json(filename):
             firstName_idx = 5
             lastName_idx = 6
             affiliation_idx = 7
+            
             while affiliation_idx <= len(line):
 
-                authors_dict["Authors"].append(
-                    {
-                        "First Name": line[firstName_idx], 
-                        "Last Name": line[lastName_idx],
-                        "Affiliation": [
-                            {
-                                "Name": line[affiliation_idx],
-                                "Start Date": "Date1",
-                                "End Date": ""
+                # check to see if author current exists within database
+                author_exists = False
+                for key, value in authors_dict.items():
+                    for sub_dict in value:
+                        if sub_dict["First Name"] == line[firstName_idx] and sub_dict["Last Name"] == line[lastName_idx]:
+                            sub_dict["Papers"].append(paperTitle)
+                            author_exists = True
+
+                # create a new entry if author does not exist
+                if author_exists == False:
+                    authors_dict["Authors"].append(
+                        {
+                            "First Name": line[firstName_idx], 
+                            "Last Name": line[lastName_idx],
+                            "Affiliation": [
+                                {
+                                    "Name": line[affiliation_idx],
+                                    "Start Date": "Date1",
+                                    "End Date": ""
+                                }
+                            ],
+                            "Papers": [paperTitle]
                             }
-                        ],
-                        "Papers": [paperTitle]
-                        }
-                )
+                    )
 
                 firstName_idx += 3
                 lastName_idx += 3
@@ -54,9 +65,9 @@ def _convert_to_json(filename):
     temp_f.close()
     return authors_dict
                 
+if __name__=="__main__":
+    test_dict = _author_load("16NovExtraction/conferences.csv")
 
-test_dict = _convert_to_json("16NovExtraction/conferences.csv")
-
-# upload
-for author in test_dict["Authors"]:
-    x = mycol.insert_one(author)
+    # upload
+    for author in test_dict["Authors"]:
+        x = mycol.insert_one(author)
