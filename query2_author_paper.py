@@ -1,8 +1,8 @@
 from pymongo import MongoClient
 
 # parameter setting
-connection_string = "mongodb://localhost:27017/mydatabase"
-database_name = "mydatabase"
+connection_string = "mongodb+srv://rcharnley:ljfsRYJzLQJv0I0C@cluster0.817yp.mongodb.net/admin?ssl=true&ssl_cert_reqs=CERT_NONE"
+database_name = "ProjectCS7330"
 authors_collection_name = "Authors"
 
 # connection protocol
@@ -16,10 +16,17 @@ def query_author(firstName, lastName):
     # query the title of the paper and return the base information
     author_filter = {"First Name": firstName, "Last Name": lastName}
     author_cursor = authors_collection.find(author_filter)
-
+    # Store papers as list
+    listOfPapersByAuthor = []
     for document in author_cursor:
-        print(document['First Name'], document['Last Name'])
-        print(*document['Papers'], sep=", ")
-    print()
+        for paper in document['Papers']: 
+            listOfPapersByAuthor.append(paper)
+    
+    # for document in author_cursor:
+    #     print(document['First Name'], document['Last Name'])
+    #     print(*document['Papers'], sep=", ")
+    # print()
+    # print(listOfPapersByAuthor)
+    return listOfPapersByAuthor
 
-query_author("Bob", "Jones")
+# query_author("Vijay", "Gadepally")

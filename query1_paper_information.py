@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 
 # parameter setting
-connection_string = "mongodb+srv://mwisniewski:nzMIpgjB96hUS2vO@cluster0.817yp.mongodb.net/Cluster0?retryWrites=true&w=majority"
+connection_string = "mongodb+srv://rcharnley:ljfsRYJzLQJv0I0C@cluster0.817yp.mongodb.net/admin?ssl=true&ssl_cert_reqs=CERT_NONE"
 database_name = "ProjectCS7330"
 papers_collection_name = "Papers"
 publication_collection_name = "Publications"
@@ -19,24 +19,35 @@ def query_paper(paper):
     title_filter = {"Title": paper}
     paper_cursor = papers_collection.find(title_filter)
 
+    # Store Paper Info as Dictionary
+    paperInfo = {}
+
     for document in paper_cursor:
-        print(document['Title'])
-        print(*document['Authors'], sep=", ")
-        print(document['URL'])
-        print(document['Page Number'])
-        print(*document['Publication'], sep=", ")
-    print()
+        paperInfo.update({"Title": document['Title']})
+        paperInfo.update({"Author": [*document['Authors']]})
+        paperInfo.update({"URL": document['URL']})
+        paperInfo.update({"Page Number": document['Page Number']})
+        paperInfo.update({"Publication": [*document['Publication']]})
+        # print(document['Title'])
+        # print(*document['Authors'], sep=", ")
+        # print(document['URL'])
+        # print(document['Page Number'])
+        # print(*document['Publication'], sep=", ")
+    # print()
+    # print(paperInfo)
 
     # query the title of the paper and return the publication information
-    publication_filter = {"Papers": paper}
-    publication_cursor = publication_collection.find(publication_filter)
+    # publication_filter = {"Papers": paper}
+    # publication_cursor = publication_collection.find(publication_filter)
 
-    for document in publication_cursor:
-        for info in document["conference_info"]:
-            print(document["Name"])
-            print(info["Iteration"])
-            print(info["Year"])
-            print(info["Location"])
-            print()
+    # for document in publication_cursor:
+    #     for info in document["conference_info"]:
+    #         print(document["Name"])
+    #         print(info["Iteration"])
+    #         print(info["Year"])
+    #         print(info["Location"])
+    #        print()
 
-query_paper("Paper1")
+    return paperInfo
+
+# query_paper("Database Aggregation")
