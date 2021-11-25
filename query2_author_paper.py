@@ -16,17 +16,11 @@ def query_author(firstName, lastName):
     # query the title of the paper and return the base information
     author_filter = {"First Name": firstName, "Last Name": lastName}
     author_cursor = authors_collection.find(author_filter)
+
     # Store papers as list
     listOfPapersByAuthor = []
     for document in author_cursor:
         for paper in document['Papers']: 
             listOfPapersByAuthor.append(paper)
     
-    # for document in author_cursor:
-    #     print(document['First Name'], document['Last Name'])
-    #     print(*document['Papers'], sep=", ")
-    # print()
-    # print(listOfPapersByAuthor)
     return listOfPapersByAuthor
-
-# query_author("Vijay", "Gadepally")

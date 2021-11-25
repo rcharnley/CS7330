@@ -28,26 +28,5 @@ def query_paper(paper):
         paperInfo.update({"URL": document['URL']})
         paperInfo.update({"Page Number": document['Page Number']})
         paperInfo.update({"Publication": [*document['Publication']]})
-        # print(document['Title'])
-        # print(*document['Authors'], sep=", ")
-        # print(document['URL'])
-        # print(document['Page Number'])
-        # print(*document['Publication'], sep=", ")
-    # print()
-    # print(paperInfo)
-
-    # query the title of the paper and return the publication information
-    # publication_filter = {"Papers": paper}
-    # publication_cursor = publication_collection.find(publication_filter)
-
-    # for document in publication_cursor:
-    #     for info in document["conference_info"]:
-    #         print(document["Name"])
-    #         print(info["Iteration"])
-    #         print(info["Year"])
-    #         print(info["Location"])
-    #        print()
 
     return paperInfo
-
-# query_paper("Database Aggregation")
