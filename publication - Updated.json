@@ -1,5 +1,6 @@
 {
     "Publication":[
+<<<<<<< HEAD
         {
             "name": "Conference1",
             "year": 2021,
@@ -21,6 +22,52 @@
                 "Paper2",
                 "Paper5"
             ]
+=======
+    {
+        "Name": "Conference1",
+        "conference_info": [
+            {
+                "Iteration": "17th",
+                "Year": 2021,
+                "Location": "Location1",
+                "Papers": ["Paper1", "Paper2", "Paper5"]
+            },
+            {
+                "Iteration": "16th",
+                "Year": 2021,
+                "Location": "Location1",
+                "Papers": ["Paper1", "Paper2", "Paper5"]
+            },
+            {
+                "Iteration": "15th",
+                "Year": 2021,
+                "Location": "Location2",
+                "Papers": ["Paper1", "Paper2"]
+            }
+            ]            
+        },
+        {
+            "Name": "Journal1",
+            "journal_info": [
+                {
+                    "Publish Year": 2021,
+                    "Publish Month": 10,
+                    "Volume#": "",
+                    "Papers": ["Paper6"]
+                }
+            ]
+        },
+        {
+            "Name": "Journal2",
+            "journal_info": [
+                {
+                    "Publish Year": 2021,
+                    "Publish Month": 1,
+                    "Volume#": "11",
+                    "Papers": ["Paper7"]
+                }
+            ] 
+>>>>>>> 0de3689ca11830dfe2a77a053bbf6d857fe31b1e
         }
     ]
 }
