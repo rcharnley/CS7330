@@ -11,9 +11,8 @@ SEARCH = "relational database"
 MIN_YEAR = 2016
 MAX_YEAR = 2021
 YEAR = range(MIN_YEAR, MAX_YEAR+1)
-TOTAL_PAPERS = 2000
+TOTAL_PAPERS = 500
 TOTAL_PAPERS_PER_YEAR = int(round(TOTAL_PAPERS / len(YEAR)))
-VENUES = ['CONFERENCE', 'JOURNAL']
 OPTIONAL_INFO = ['NONE', 'URL', 'PAGES', 'BOTH']
 AFFILIATIONS = [None, "University of Michigan", "Southern Methodist University", "Auburn University", "Boston College", "Stanford", "Yale", "New York University", "University of Alaska", "Huntingdon College", "Troy University", None, "Southwest Airlines", "IBM", "American Airlines", "Sofft Layer", "USAA", "State Farm"]
 
@@ -54,24 +53,24 @@ CONFERENCES = {2021: [Conference('ACM SIGMOD International Conference on Managem
                       Conference('ACM SIGIR Conference on Research and Development in Information Retrieval', '10th', '2016', 'Berlin, Germany')]
               }
 
-JOURNALS = {2021: [Journal('Journal of Big Data', '2021', 'January', None),
-                   Journal('IEEE Transactions on Big Data', '2021', 'February', '28'),
-                   Journal('IEEE Transactions on Knowledge and Data Engineering', '2021', 'March', '20')],
-            2020: [Journal('Journal of Big Data', '2021', 'January', None),
-                   Journal('IEEE Transactions on Big Data', '2021', 'February', '27'),
-                   Journal('IEEE Transactions on Knowledge and Data Engineering', '2021', 'March', '19')],
-            2019: [Journal('Journal of Big Data', '2021', 'January', None),
-                   Journal('IEEE Transactions on Big Data', '2021', 'February', '26'),
-                   Journal('IEEE Transactions on Knowledge and Data Engineering', '2021', 'March', '18')],
-            2018: [Journal('Journal of Big Data', '2021', 'January', None),
-                   Journal('IEEE Transactions on Big Data', '2021', 'February', '25'),
-                   Journal('IEEE Transactions on Knowledge and Data Engineering', '2021', 'March', '17')],
-            2017: [Journal('Journal of Big Data', '2021', 'January', None),
-                   Journal('IEEE Transactions on Big Data', '2021', 'February', '24'),
-                   Journal('IEEE Transactions on Knowledge and Data Engineering', '2021', 'March', '16')],
-            2016: [Journal('Journal of Big Data', '2021', 'January', None),
-                   Journal('IEEE Transactions on Big Data', '2021', 'February', '23'),
-                   Journal('IEEE Transactions on Knowledge and Data Engineering', '2021', 'March', '15')]
+JOURNALS = {2021: [Journal('Journal of Big Data', '2021', '01', None),
+                   Journal('IEEE Transactions on Big Data', '2021', '03', '28'),
+                   Journal('IEEE Transactions on Knowledge and Data Engineering', '2021', '03', '20')],
+            2020: [Journal('Journal of Big Data', '2020', '01', None),
+                   Journal('IEEE Transactions on Big Data', '2020', '03', '27'),
+                   Journal('IEEE Transactions on Knowledge and Data Engineering', '2020', '03', '19')],
+            2019: [Journal('Journal of Big Data', '2019', '01', None),
+                   Journal('IEEE Transactions on Big Data', '2019', '03', '26'),
+                   Journal('IEEE Transactions on Knowledge and Data Engineering', '2019', '03', '18')],
+            2018: [Journal('Journal of Big Data', '2018', '01', None),
+                   Journal('IEEE Transactions on Big Data', '2018', '03', '25'),
+                   Journal('IEEE Transactions on Knowledge and Data Engineering', '2018', '03', '17')],
+            2017: [Journal('Journal of Big Data', '2017', '01', None),
+                   Journal('IEEE Transactions on Big Data', '2017', '03', '24'),
+                   Journal('IEEE Transactions on Knowledge and Data Engineering', '2017', '03', '16')],
+            2016: [Journal('Journal of Big Data', '2016', '01', None),
+                   Journal('IEEE Transactions on Big Data', '2016', '03', '23'),
+                   Journal('IEEE Transactions on Knowledge and Data Engineering', '2016', '03', '15')]
             }
 
 
@@ -120,60 +119,76 @@ def initialize_paper_count_by_year():
     return paper_count_by_year
 
 
-if __name__ == "__main__":
+def decode(result):
+    try:
+        title = bytes(result.title, "latin-1").decode("utf-8")
+        result.title = title
 
-    search = arxiv.Search(
-        query=SEARCH,
-        max_results=float('inf'),
-        sort_by=arxiv.SortCriterion.Relevance
-    )
+        for author in result.authors:
+            name = bytes(author.name, "latin-1").decode("utf-8")
+            author.name = name
+    except UnicodeDecodeError:
+        return False
+    except UnicodeEncodeError:
+        return False
 
-    paper_count_by_year = initialize_paper_count_by_year()
-    affiliations = {}
-    journal_papers = []
-    conference_papers = []
-    duplicate_authors = {}
+    return True
 
-    for result in search.results():
-        if is_done(paper_count_by_year):
-            break
-        try:
-            year = result.published.year
-            if (MIN_YEAR <= year <= MAX_YEAR) and is_needed(paper_count_by_year, year):
-                authors = []
-                for author in result.authors:
-                    first, last = author.name.split(maxsplit=1)
-                    if author.name in affiliations.keys():
-                        if not author.name in duplicate_authors.keys():
-                            duplicate_authors[author.name] = 1
-                        duplicate_authors[author.name] += 1
-                    else:
-                        affiliations[author.name] = random.choice(AFFILIATIONS)
-                    authors.append(Author(first, last, affiliations[author.name]))
-                # Randomly select a journal or conference
-                paper = None
-                if random.choice(VENUES) == 'CONFERENCE':
-                    conference = random.choice(CONFERENCES[year])
-                    paper = Paper(result.title, authors, conference)
-                    conference_papers.append(paper)
-                else:
-                    journal = random.choice(JOURNALS[year])
-                    paper = Paper(result.title, authors, journal)
-                    journal_papers.append(paper)
-                # Randomly select the optional features
-                optional = random.choice(OPTIONAL_INFO)
-                if (optional == 'URL') or (optional == 'BOTH'):
-                    paper.url = result.pdf_url
-                if (optional == 'PAGES') or (optional == 'BOTH'):
-                    pageA = random.randint(1, 250)
-                    pageB = random.randint(pageA+1, pageA+15)
-                    paper.pages = "{}-{}".format(pageA, pageB)
-                #print(paper.title)
-                increment(paper_count_by_year, year)
-        except:
-            pass
+def get_authors(result, affiliations, duplicate_authors):
+    authors = []
+    for author in result.authors:
+        first, last = author.name.split(maxsplit=1)
+        if author.name in affiliations.keys():
+            if not author.name in duplicate_authors.keys():
+                duplicate_authors[author.name] = 1
+            duplicate_authors[author.name] += 1
+        else:
+            affiliations[author.name] = random.choice(AFFILIATIONS)
+        authors.append(Author(first, last, affiliations[author.name]))
+    return authors
 
-    with open("journals.csv", 'w', newline='') as journals:
+def get_paper(result, year, conference_papers, conferences, journal_papers, journals):
+    # Randomly select a journal or conference
+    paper = None
+    if random.randint(0, 1) == 0:
+        conference = random.choice(CONFERENCES[year])
+        paper = Paper(result.title, authors, conference)
+        conference_papers.append(paper)
+        if conference.name not in conferences.keys():
+            conferences[conference.name] = {}
+        if year not in conferences[conference.name] .keys():
+            conferences[conference.name][year] = {}
+        if conference.number not in conferences[conference.name][year].keys():
+            conferences[conference.name][year][conference.number] = 0
+        conferences[conference.name][year][conference.number] += 1
+    else:
+        journal = random.choice(JOURNALS[year])
+        paper = Paper(result.title, authors, journal)
+        journal_papers.append(paper)
+        if journal.name not in journals.keys():
+            journals[journal.name] = {}
+        if year not in journals[journal.name] .keys():
+            journals[journal.name][year] = {}
+        if journal.month not in journals[journal.name][year].keys():
+            journals[journal.name][year][journal.month] = 0
+        journals[journal.name][year][journal.month] += 1
+
+    return paper
+
+
+def add_optionals(result, paper):
+    # Randomly select the optional features
+    optional = random.choice(OPTIONAL_INFO)
+    if (optional == 'URL') or (optional == 'BOTH'):
+        paper.url = result.pdf_url
+    if (optional == 'PAGES') or (optional == 'BOTH'):
+        pageA = random.randint(1, 250)
+        pageB = random.randint(pageA + 1, pageA + 15)
+        paper.pages = "{}-{}".format(pageA, pageB)
+
+
+def write_journal_papers(journal_papers):
+    with open("journal_papers.csv", 'w', newline='') as journals:
         writer = csv.writer(journals)
         for paper in journal_papers:
             author_info = []
@@ -187,12 +202,20 @@ if __name__ == "__main__":
                           paper.publication.month,
                           paper.publication.volume]
             paper_info.extend(author_info)
-            try:
-                writer.writerow(paper_info)
-            except:
-                pass
+            writer.writerow(paper_info)
 
-    with open("conferences.csv", 'w', newline='') as conferences:
+
+def write_journals(journals):
+    with open("journals.csv", 'w', newline='') as journals_file:
+        writer = csv.writer(journals_file)
+        for name in journals.keys():
+            for year in journals[name].keys():
+                for iteration in journals[name][year].keys():
+                    writer.writerow([name, year, iteration, journals[name][year][iteration]])
+
+
+def write_conference_papers(conference_papers):
+    with open("conferences_papers.csv", 'w', newline='') as conferences:
         writer = csv.writer(conferences)
         for paper in conference_papers:
             author_info = []
@@ -206,15 +229,57 @@ if __name__ == "__main__":
                           paper.publication.year,
                           paper.publication.location]
             paper_info.extend(author_info)
-            try:
-                writer.writerow(paper_info)
-            except:
-                pass
+            writer.writerow(paper_info)
 
+
+def write_conferences(conferences):
+    with open("conferences.csv", 'w', newline='') as conferences_file:
+        writer = csv.writer(conferences_file)
+        for name in conferences.keys():
+            for year in conferences[name].keys():
+                for iteration in conferences[name][year].keys():
+                    writer.writerow([name, year, iteration, conferences[name][year][iteration]])
+
+
+def write_authors(duplicate_authors):
     with open("authors.csv", 'w', newline='') as authors:
         writer = csv.writer(authors)
         for author in duplicate_authors.items():
+            writer.writerow(author)
+
+
+if __name__ == "__main__":
+
+    search = arxiv.Search(
+        query=SEARCH,
+        max_results=float('inf'),
+        sort_by=arxiv.SortCriterion.Relevance
+    )
+
+    paper_count_by_year = initialize_paper_count_by_year()
+    affiliations = {}
+    journal_papers = []
+    conference_papers = []
+    duplicate_authors = {}
+    conferences = {}
+    journals = {}
+
+    for result in search.results():
+        if is_done(paper_count_by_year):
+            break
+        if decode(result):
             try:
-                writer.writerow(author)
+                year = result.published.year
+                if (MIN_YEAR <= year <= MAX_YEAR) and is_needed(paper_count_by_year, year):
+                    authors = get_authors(result, affiliations, duplicate_authors)
+                    paper = get_paper(result, year, conference_papers, conferences, journal_papers, journals)
+                    add_optionals(result, paper)
+                    increment(paper_count_by_year, year)
             except:
                 pass
+
+    write_journal_papers(journal_papers)
+    write_journals(journals)
+    write_conference_papers(conference_papers)
+    write_conferences(conferences)
+    write_authors(duplicate_authors)

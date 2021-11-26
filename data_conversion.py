@@ -1,11 +1,22 @@
+import certifi
 from pymongo import MongoClient
-import pandas as pd
+import os
 import csv
+
+# Globals
+connection_string = "mongodb+srv://mwisniewski:nzMIpgjB96hUS2vO@cluster0.817yp.mongodb.net/Cluster0?retryWrites=true&w=majority"
+database_name = "ProjectCS7330"
+extraction = "24NovExtraction"
+
+class PublicationPair:
+    def __init__(self, details, papers):
+        self.details = details
+        self.papers = papers
 
 
 def _author_load(filename):
-    authors_dict = {"Authors":[]}
-    
+    authors_dict = {"Authors": []}
+
     with open(filename, "r") as temp_f:
         authors = []
 
@@ -20,14 +31,15 @@ def _author_load(filename):
             firstName_idx = 5
             lastName_idx = 6
             affiliation_idx = 7
-            
+
             while affiliation_idx <= len(line):
 
                 # check to see if author current exists within database
                 author_exists = False
                 for key, value in authors_dict.items():
                     for sub_dict in value:
-                        if sub_dict["First Name"] == line[firstName_idx] and sub_dict["Last Name"] == line[lastName_idx]:
+                        if sub_dict["First Name"] == line[firstName_idx] and sub_dict["Last Name"] == line[
+                            lastName_idx]:
                             sub_dict["Papers"].append(paperTitle)
                             author_exists = True
 
@@ -35,7 +47,7 @@ def _author_load(filename):
                 if author_exists == False:
                     authors_dict["Authors"].append(
                         {
-                            "First Name": line[firstName_idx], 
+                            "First Name": line[firstName_idx],
                             "Last Name": line[lastName_idx],
                             "Affiliation": [
                                 {
@@ -45,7 +57,7 @@ def _author_load(filename):
                                 }
                             ],
                             "Papers": [paperTitle]
-                            }
+                        }
                     )
 
                 firstName_idx += 3
@@ -55,9 +67,10 @@ def _author_load(filename):
     temp_f.close()
     return authors_dict
 
+
 def _paper_load(filename):
-    papers_dict = {"Papers":[]}
-    
+    papers_dict = {"Papers": []}
+
     with open(filename, "r") as temp_f:
         papers = []
 
@@ -72,7 +85,7 @@ def _paper_load(filename):
             firstName_idx = 5
             lastName_idx = 6
             affiliation_idx = 7
-            
+
             while affiliation_idx <= len(line):
 
                 # check to see if paper current;y exists within database
@@ -85,7 +98,6 @@ def _paper_load(filename):
 
                 # create a new entry if author does not exist
                 if paper_exists == False:
-
                     papers_dict["Papers"].append(
                         {
                             "Title": paperTitle,
@@ -102,13 +114,62 @@ def _paper_load(filename):
 
     temp_f.close()
     return papers_dict
-                
-if __name__=="__main__":
 
+
+def _load_pubs(filename, isConference):
+    pubs = {}
+    with open(filename, "r") as temp_f:
+        reader = csv.reader(temp_f)
+        next(reader, None)  # skip the headers
+        for line in reader:
+            paper = line[0]
+            name = line[1]
+            if isConference:
+                iteration = line[2]
+                year = int(line[3])
+                location = line[4]
+            else:
+                year = int(line[2])
+                iteration = line[3]
+                volume = None if not line[4] else line[4]
+            if name not in pubs.keys():
+                pubs[name] = {}
+            if year not in pubs[name].keys():
+                pubs[name][year] = {}
+            if iteration not in pubs[name][year] .keys():
+                details = []
+                if isConference:
+                    details.append(location)
+                elif volume is not None:
+                    details.append(volume)
+                pubs[name][year][iteration] = PublicationPair(details, [])
+            pubs[name][year][iteration].papers.append(paper)
+
+    # Create the documents
+    docs = []
+    for name in pubs.keys():
+        for year in pubs[name].keys():
+            for iteration in pubs[name][year].keys():
+                if isConference:
+                    details_key = "conference_details"
+                    details = {"location": pubs[name][year][iteration].details[0] }
+                else:
+                    details_key = "journal_details"
+                    details = {}
+                    if len(pubs[name][year][iteration].details):
+                        details['volume'] = pubs[name][year][iteration].details[0]
+                doc = {"name": name,
+                       "year": year,
+                       "iteration": iteration,
+                       details_key: details,
+                       "papers": pubs[name][year][iteration].papers}
+                docs.append(doc)
+    return docs
+
+
+def _load_authors():
     # parameter setting
-    connection_string = "mongodb+srv://mwisniewski:nzMIpgjB96hUS2vO@cluster0.817yp.mongodb.net/Cluster0?retryWrites=true&w=majority"
-    database_name = "ProjectCS7330"
-    authors_collection_name = "Papers"
+    authors_collection_name = "Authors"
 
     # connection protocol
     myclient = MongoClient(connection_string)
@@ -116,11 +177,37 @@ if __name__=="__main__":
     mycol = mydb[authors_collection_name]
 
     # # upload authors
-    # test_dict = _author_load("16NovExtraction/conferences.csv")
-    # for author in test_dict["Authors"]:
-    #     x = mycol.insert_one(author)
+    test_dict = _author_load("16NovExtraction/conferences.csv")
+    for author in test_dict["Authors"]:
+        x = mycol.insert_one(author)
+
+
+def _load_papers():
+    collection_name = "Papers"
+
+    # connection protocol
+    myclient = MongoClient(connection_string)
+    mydb = myclient[database_name]
+    mycol = mydb[collection_name]
 
     # upload papers
     test_dict = _paper_load("16NovExtraction/conferences.csv")
     for paper in test_dict["Papers"]:
         x = mycol.insert_one(paper)
+
+
+def _load_publications():
+
+    client = MongoClient(connection_string, ssl_ca_certs=certifi.where())
+    db = client.ProjectCS7330
+    confs = _load_pubs(os.path.join(extraction, "conferences_papers.csv"), isConference=True)
+    journals = _load_pubs(os.path.join(extraction, "journal_papers.csv"), isConference=False)
+    db.Publications.insert_many(confs)
+    db.Publications.insert_many(journals)
+
+
+if __name__ == "__main__":
+
+    # _load_authors()
+    # _load_papers()
+    _load_publications()
