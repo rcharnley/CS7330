@@ -1,3 +1,4 @@
+import random
 from datetime import date, datetime, timedelta
 
 import certifi
@@ -9,12 +10,23 @@ import csv
 connection_string = "mongodb+srv://mwisniewski:nzMIpgjB96hUS2vO@cluster0.817yp.mongodb.net/Cluster0?retryWrites=true&w=majority"
 database_name = "ProjectCS7330"
 extraction = "24NovExtraction"
-
+OPTIONAL_INFO = ['NONE', 'URL', 'PAGES', 'BOTH']
 
 class PublicationPair:
     def __init__(self, details, papers):
         self.details = details
         self.papers = papers
+
+
+def add_optionals(paper):
+    # Randomly select the optional features
+    optional = random.choice(OPTIONAL_INFO)
+    if (optional == 'URL') or (optional == 'BOTH'):
+        paper["url"] = "https://arxiv.org/abs/{}.{}".format(random.randint(1000,9999), random.randint(1000,9999))
+    if (optional == 'PAGES') or (optional == 'BOTH'):
+        pageA = random.randint(1, 250)
+        pageB = random.randint(pageA + 1, pageA + 15)
+        paper["page_number"] = "{}-{}".format(pageA, pageB)
 
 
 def get_datetime(month, year):
@@ -90,18 +102,11 @@ def _author_load(conferences_papers, journal_papers):
     return authors_dict
 
 
-def _paper_load(filename):
-    papers_dict = {"Papers": []}
-
+def _paper_load(filename, papers_dict):
     with open(filename, "r") as temp_f:
-        papers = []
-
         for line in csv.reader(temp_f):
             paperTitle = line[0]
-            conferenceName = line[1]
-            iteration = line[2]
-            year = line[3]
-            location = line[4]
+            venueName = line[1]
 
             # author info
             firstName_idx = 5
@@ -114,21 +119,17 @@ def _paper_load(filename):
                 paper_exists = False
                 for key, value in papers_dict.items():
                     for sub_dict in value:
-                        if sub_dict["Title"] == paperTitle:
-                            sub_dict["Authors"].append(f'{line[firstName_idx]} {line[lastName_idx]}')
+                        if sub_dict["title"] == paperTitle:
+                            sub_dict["authors"].append(f'{line[firstName_idx]} {line[lastName_idx]}')
                             paper_exists = True
 
                 # create a new entry if author does not exist
                 if paper_exists == False:
-                    papers_dict["Papers"].append(
-                        {
-                            "Title": paperTitle,
-                            "Authors": [f'{line[firstName_idx]} {line[lastName_idx]}'],
-                            "URL": "TESTURL.COM",
-                            "Page Number": "TEST#",
-                            "Publication": [conferenceName]
-                        }
-                    )
+                    paper = {"title": paperTitle,
+                             "authors": [f'{line[firstName_idx]} {line[lastName_idx]}'],
+                             "publication": [venueName]}
+                    add_optionals(paper)
+                    papers_dict["Papers"].append(paper)
 
                 firstName_idx += 3
                 lastName_idx += 3
@@ -206,16 +207,19 @@ def _load_authors():
 
 
 def _load_papers():
+    papers_dict = {"Papers": []}
     collection_name = "Papers"
 
     # connection protocol
-    myclient = MongoClient(connection_string)
+    myclient = MongoClient(connection_string, ssl_ca_certs=certifi.where())
     mydb = myclient[database_name]
     mycol = mydb[collection_name]
 
     # upload papers
-    test_dict = _paper_load("16NovExtraction/conferences.csv")
-    for paper in test_dict["Papers"]:
+    _paper_load(os.path.join(extraction, "conferences_papers.csv"), papers_dict)
+    _paper_load(os.path.join(extraction, "journal_papers.csv"), papers_dict)
+
+    for paper in papers_dict["Papers"]:
         x = mycol.insert_one(paper)
 
 
@@ -231,6 +235,6 @@ def _load_publications():
 
 if __name__ == "__main__":
 
-    _load_authors()
-    # _load_papers()
+    #_load_authors()
+    _load_papers()
     #_load_publications()
