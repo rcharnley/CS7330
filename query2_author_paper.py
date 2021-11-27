@@ -1,3 +1,6 @@
+import re
+
+import certifi
 from pymongo import MongoClient
 
 # parameter setting
@@ -6,21 +9,45 @@ database_name = "ProjectCS7330"
 authors_collection_name = "Authors"
 
 # connection protocol
-client = MongoClient(connection_string)
+client = MongoClient(connection_string, ssl_ca_certs=certifi.where())
 db = client.get_database(database_name)
 authors_collection = db.get_collection(authors_collection_name)
 
 # query a author name
-def query_author(firstName, lastName):
+def query_author(first_name=None, last_name=None):
 
     # query the title of the paper and return the base information
-    author_filter = {"First Name": firstName, "Last Name": lastName}
+    filter = []
+    if first_name is not None and len(first_name):
+        filter.append({"first_name": re.compile(first_name, re.IGNORECASE)})
+    if last_name is not None and len(last_name):
+        filter.append({"last_name": re.compile(last_name, re.IGNORECASE)})
+
+    if len(filter):
+        author_filter = {"$and": filter}
+    else:
+        author_filter = {}
     author_cursor = authors_collection.find(author_filter)
 
     # Store papers as list
     listOfPapersByAuthor = []
     for document in author_cursor:
-        for paper in document['Papers']: 
+        for paper in document['papers']:
             listOfPapersByAuthor.append(paper)
     
     return listOfPapersByAuthor
+
+
+def print_result(papers):
+    for paper in papers:
+        print(paper)
+    print('------------------')
+
+
+if __name__ == "__main__":
+
+    print_result(query_author('Siddhant', 'Arora'))
+    print_result(query_author(first_name='Siddhant'))
+    print_result(query_author(last_name='Arora'))
+    print_result(query_author(first_name='Sidd.*'))
+    print_result(query_author(last_name='Aro.*'))

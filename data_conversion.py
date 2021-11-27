@@ -1,3 +1,5 @@
+from datetime import date, datetime, timedelta
+
 import certifi
 from pymongo import MongoClient
 import os
@@ -8,24 +10,41 @@ connection_string = "mongodb+srv://mwisniewski:nzMIpgjB96hUS2vO@cluster0.817yp.m
 database_name = "ProjectCS7330"
 extraction = "24NovExtraction"
 
+
 class PublicationPair:
     def __init__(self, details, papers):
         self.details = details
         self.papers = papers
 
 
-def _author_load(filename):
-    authors_dict = {"Authors": []}
+def get_datetime(month, year):
+    return datetime.combine(date(year, month, 1), datetime.min.time())
 
+
+def handle_affiliation(affiliations, name, month, year):
+    for index in range(len(affiliations)):
+        if affiliations[index]['name'] == name:
+            return
+    if name is not None and len(name):
+        start_date = get_datetime(year, month)
+        end_date = start_date - timedelta(1)
+        affiliations[-1]["end_date"] = end_date
+        affiliations.append({"name": name,
+                             "start_date": start_date})
+
+
+def _author_load_file(authors_dict, filename, isConference):
     with open(filename, "r") as temp_f:
         authors = []
 
         for line in csv.reader(temp_f):
             paperTitle = line[0]
-            conferenceName = line[1]
-            iteration = line[2]
-            year = line[3]
-            location = line[4]
+            if isConference:
+                year = int(line[3])
+                month = 1  # Conferences don't have months
+            else:
+                year = int(line[2])
+                month = int(line[3])
 
             # author info
             firstName_idx = 5
@@ -38,25 +57,23 @@ def _author_load(filename):
                 author_exists = False
                 for key, value in authors_dict.items():
                     for sub_dict in value:
-                        if sub_dict["First Name"] == line[firstName_idx] and sub_dict["Last Name"] == line[
-                            lastName_idx]:
-                            sub_dict["Papers"].append(paperTitle)
+                        if sub_dict["first_name"] == line[firstName_idx] and sub_dict["last_name"] == line[lastName_idx]:
+                            sub_dict["papers"].append(paperTitle)
+                            handle_affiliation(sub_dict['affiliations'], line[affiliation_idx], month, year)
                             author_exists = True
 
                 # create a new entry if author does not exist
                 if author_exists == False:
+                    affiliation = []
+                    if line[affiliation_idx] is not None and len(line[affiliation_idx]):
+                        affiliation.append({"name": line[affiliation_idx],
+                                            "start_date": get_datetime(month, year)})
                     authors_dict["Authors"].append(
                         {
-                            "First Name": line[firstName_idx],
-                            "Last Name": line[lastName_idx],
-                            "Affiliation": [
-                                {
-                                    "Name": line[affiliation_idx],
-                                    "Start Date": "Date1",
-                                    "End Date": ""
-                                }
-                            ],
-                            "Papers": [paperTitle]
+                            "first_name": line[firstName_idx],
+                            "last_name": line[lastName_idx],
+                            "affiliations": affiliation,
+                            "papers": [paperTitle]
                         }
                     )
 
@@ -65,6 +82,11 @@ def _author_load(filename):
                 affiliation_idx += 3
 
     temp_f.close()
+
+def _author_load(conferences_papers, journal_papers):
+    authors_dict = {"Authors": []}
+    _author_load_file(authors_dict, conferences_papers, isConference=True)
+    _author_load_file(authors_dict, journal_papers, isConference=False)
     return authors_dict
 
 
@@ -172,12 +194,13 @@ def _load_authors():
     authors_collection_name = "Authors"
 
     # connection protocol
-    myclient = MongoClient(connection_string)
+    myclient = MongoClient(connection_string, ssl_ca_certs=certifi.where())
     mydb = myclient[database_name]
     mycol = mydb[authors_collection_name]
 
     # # upload authors
-    test_dict = _author_load("16NovExtraction/conferences.csv")
+    test_dict = _author_load(os.path.join(extraction, "conferences_papers.csv"),
+                             os.path.join(extraction, "journal_papers.csv"))
     for author in test_dict["Authors"]:
         x = mycol.insert_one(author)
 
@@ -208,6 +231,6 @@ def _load_publications():
 
 if __name__ == "__main__":
 
-    # _load_authors()
+    _load_authors()
     # _load_papers()
-    _load_publications()
+    #_load_publications()
