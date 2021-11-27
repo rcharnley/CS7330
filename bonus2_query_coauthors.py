@@ -29,13 +29,15 @@ def findCoAuthors(listOfPapers, firstName, lastName):
     coAuthorsMap = {}
     for paper in listOfPapers: 
         paperInfo = queryByTitle.query_paper(paper)
-        coAuthors = onlyCoAuthors(paperInfo.get("Author"), firstName, lastName)
-        coAuthorsMap.update({paperInfo.get("Title"): coAuthors})
+        if paperInfo:
+            coAuthors = onlyCoAuthors(paperInfo.get("Author"), firstName, lastName)
+        if coAuthors:
+            coAuthorsMap.update({paperInfo.get("Title"): coAuthors})
     return coAuthorsMap
 
 # helper function
 def Merge(dict1, dict2):
-    res = dict1 | dict2
+    res = {**dict1, **dict2}
     return res
 
 # helper function
@@ -56,7 +58,7 @@ def query_co_author(firstName, lastName):
     # BUILD LEVEL 1
     level1CoAuthorsMap = {}
     for author in level0CoAuthorsList: 
-        name = author.split()
+        name = author.split(' ', 1)
         tempListOfPapers = queryByAuthor.query_author(name[0], name[1])
         tempMap = findCoAuthors(tempListOfPapers, name[0], name[1])
         level1CoAuthorsMap = Merge(level1CoAuthorsMap, tempMap)
@@ -69,8 +71,8 @@ def query_co_author(firstName, lastName):
 
     # BUILD LEVEL 2
     level2CoAuthorsMap = {}
-    for author in level1CoAuthorsList: 
-        name = author.split()
+    for author in level1CoAuthorsList:
+        name = author.split(' ', 1)
         tempListOfPapers = queryByAuthor.query_author(name[0], name[1])
         tempMap = findCoAuthors(tempListOfPapers, name[0], name[1])
         level2CoAuthorsMap = Merge(level2CoAuthorsMap, tempMap)
@@ -85,7 +87,7 @@ def query_co_author(firstName, lastName):
     # BUILD LEVEL 3
     level3CoAuthorsMap = {}
     for author in level2CoAuthorsList: 
-        name = author.split()
+        name = author.split(' ', 1)
         tempListOfPapers = queryByAuthor.query_author(name[0], name[1])
         tempMap = findCoAuthors(tempListOfPapers, name[0], name[1])
         level3CoAuthorsMap = Merge(level3CoAuthorsMap, tempMap)
