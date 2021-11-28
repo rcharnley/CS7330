@@ -33,20 +33,20 @@ def _authorPapers(paper):
     return papers
 
 
-def insertAuthor(lastName, firstName, affiliation, papers):
+def insertAuthor(firstName, lastName, affiliation, papers):
     authors_dict = {}
-    authors_dict["First Name"] = firstName
-    authors_dict["Last Name"] = lastName
-    authors_dict["Affiliation"] = []
+    authors_dict["first_name"] = firstName
+    authors_dict["last_name"] = lastName
+    authors_dict["affiliation"] = []
 
     for employer in affiliation:
         employer_dict = {}
-        employer_dict["Name"] = employer[0]
-        employer_dict["Start Date"] = employer[1]
-        employer_dict["End Date"] = employer[2]
-        authors_dict["Affiliation"].append(employer_dict)
+        employer_dict["name"] = employer[0]
+        employer_dict["start_date"] = employer[1]
+        employer_dict["end_date"] = employer[2]
+        authors_dict["affiliation"].append(employer_dict)
 
-    authors_dict["Papers"] = papers
+    authors_dict["papers"] = papers
 
     return authors_dict
 

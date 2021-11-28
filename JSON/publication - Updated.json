@@ -1,73 +1,24 @@
 {
     "Publication":[
-<<<<<<< HEAD
         {
-            "name": "Conference1",
-            "year": 2021,
-            "iteration": "17th",
-            "conference_details" : { "location": "Location1" },
-            "papers": [
+            "Name": "Conference1",
+            "Year": 2021,
+            "Conference Details" : { "Number": "17th", "Location": "Location1" },
+            "Papers": [
                 "Paper1",
                 "Paper2",
                 "Paper5"
             ]
         },
         {
-            "name": "Journal",
-            "year": 2021,
-            "iteration": "05",
-            "journal_details" : { "volume": "1" },
-            "papers": [
+            "Name": "Journal",
+            "Year": 2021,
+            "Journal Details" : { "Month": "May", "Volume": "1" },
+            "Papers": [
                 "Paper1",
                 "Paper2",
                 "Paper5"
             ]
-=======
-    {
-        "Name": "Conference1",
-        "conference_info": [
-            {
-                "Iteration": "17th",
-                "Year": 2021,
-                "Location": "Location1",
-                "Papers": ["Paper1", "Paper2", "Paper5"]
-            },
-            {
-                "Iteration": "16th",
-                "Year": 2021,
-                "Location": "Location1",
-                "Papers": ["Paper1", "Paper2", "Paper5"]
-            },
-            {
-                "Iteration": "15th",
-                "Year": 2021,
-                "Location": "Location2",
-                "Papers": ["Paper1", "Paper2"]
-            }
-            ]            
-        },
-        {
-            "Name": "Journal1",
-            "journal_info": [
-                {
-                    "Publish Year": 2021,
-                    "Publish Month": 10,
-                    "Volume#": "",
-                    "Papers": ["Paper6"]
-                }
-            ]
-        },
-        {
-            "Name": "Journal2",
-            "journal_info": [
-                {
-                    "Publish Year": 2021,
-                    "Publish Month": 1,
-                    "Volume#": "11",
-                    "Papers": ["Paper7"]
-                }
-            ] 
->>>>>>> 0de3689ca11830dfe2a77a053bbf6d857fe31b1e
         }
     ]
 }
