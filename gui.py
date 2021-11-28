@@ -1,10 +1,11 @@
 from tkinter import *
 from tkinter import ttk
 import tkinter as tk
-import query1_paper_information as queryByTitle
-import query2_author_paper as queryByAuthor
+from database import Database
+from query import Query
+from bonus import Bonus
 import author_insert as author_insert
-import query3_publication_information as queryByPublication
+
 def search():
     firstname = (firstname_var.get()).strip()
     lastname = (lastname_var.get()).strip()
@@ -15,7 +16,7 @@ def search():
     # [QUERY 1] The program should get the name of a paper and return all relevant info for each paper
     if title != "":
         print("Search for papers by title " + title)
-        mapOfPaperInfo = queryByTitle.query_paper(title)
+        mapOfPaperInfo = myQuery.query_paper(title)
         titleResults = Toplevel(window)
         titleResults.title("Paper Results for Search by Title " + title)
         titleResults.geometry("600x600")
@@ -29,7 +30,7 @@ def search():
     # [QUERY 2] The program should get the name of an author (just the name), and list of the papers for that author.
     if firstname != "" and lastname != "": 
         print("Search for papers by author " + firstname + " " + lastname)
-        listOfPapers = queryByAuthor.query_author(firstname, lastname)
+        listOfPapers = myQuery.query_author(firstname, lastname)
         authorResults = Toplevel(window)
         authorResults.title("Paper Results for Search by Author " + firstname + " " + lastname)
         authorResults.geometry("600x600")
@@ -40,7 +41,7 @@ def search():
         authorResults.mainloop()
     # [QUERY 3] The program should get the name of a publication, and a year range, and list of papers that is published within that range.
     if publication != "" and startyear != 0 and endyear != 0: 
-        listOfPapers = queryByPublication.query_publication(publication, str(startyear), str(endyear))
+        listOfPapers = myQuery.query_publication(publication, str(startyear), str(endyear))
         print("Search for papers by publication " + publication + " between the years of " + str(startyear) + " and " + str(endyear))
         publicationResults = Toplevel(window)
         publicationResults.title("Paper Results for Search by Publication " + publication)
@@ -86,7 +87,11 @@ def insert():
     papers_var.set("")
     
 
-
+# define classes
+myDB = Database("rcharnley", "ljfsRYJzLQJv0I0C")
+myQuery = Query(myDB)
+myBonus = Bonus(myDB, myQuery)
+#Set tkinter Window
 window = Tk()
 window.title("Research Papers")
 window.geometry('700x600')

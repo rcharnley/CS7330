@@ -134,6 +134,7 @@ class Bonus:
         level2CoAuthorsSet = set((level2CoAuthorsList))
         level3CoAuthorsSet = set((level3CoAuthorsList))
         level3CoAuthorsList = list(level3CoAuthorsSet.difference(level2CoAuthorsSet))
+        
         self.level0 = level0CoAuthorsList
         self.level1 = level1CoAuthorsList
         self.level2 = level2CoAuthorsList
@@ -157,9 +158,11 @@ class Bonus:
 
 
 # [Test Bonus Class] returns and prints bonus results for Bonus class
+'''
 myDB = Database("rcharnley", "ljfsRYJzLQJv0I0C")
 myQuery = Query(myDB)
 myBonus = Bonus(myDB, myQuery)
-#myBonus.query_same_name_authors("Martin", "Grohe")
+myBonus.query_same_name_authors("Martin", "Grohe")
 myBonus.query_co_author("Martin", "Grohe")
 myBonus.printLevelList()
+'''
