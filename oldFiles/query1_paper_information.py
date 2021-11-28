@@ -1,6 +1,6 @@
 import re
 
-import certifi
+#import certifi
 from pymongo import MongoClient
 
 # parameter setting
@@ -10,7 +10,7 @@ papers_collection_name = "Papers"
 publication_collection_name = "Publications"
 
 # connection protocol
-client = MongoClient(connection_string, ssl_ca_certs=certifi.where())
+client = MongoClient(connection_string)
 db = client.get_database(database_name)
 papers_collection = db.get_collection(papers_collection_name)
 publication_collection = db.get_collection(publication_collection_name)

@@ -1,6 +1,7 @@
 from pymongo import MongoClient
-import query2_author_paper as queryByAuthor
-import query1_paper_information as queryByTitle
+from query import Query
+from database import Database
+
 
 # parameter setting
 connection_string = "mongodb+srv://rcharnley:ljfsRYJzLQJv0I0C@cluster0.817yp.mongodb.net/admin?ssl=true&ssl_cert_reqs=CERT_NONE"
@@ -14,6 +15,8 @@ db = client.get_database(database_name)
 authors_collection = db.get_collection(authors_collection_name)
 papers_collection = db.get_collection(papers_collection_name) 
 
+myQuery = Query(Database("rcharnley", "ljfsRYJzLQJv0I0C"))
+
 def buildCoAuthorsList(coAuthorsMap):
     coAuthorsSet = set(())
     for values in coAuthorsMap.values():
@@ -26,14 +29,12 @@ def onlyCoAuthors(authors, firstName, lastName):
     return authors
 
 def findCoAuthors(listOfPapers, firstName, lastName): 
-    coAuthorsMap = {}
-    for paper in listOfPapers: 
-        paperInfo = queryByTitle.query_paper(paper)
-        if paperInfo:
-            coAuthors = onlyCoAuthors(paperInfo.get("Author"), firstName, lastName)
-        if coAuthors:
-            coAuthorsMap.update({paperInfo.get("Title"): coAuthors})
-    return coAuthorsMap
+     coAuthorsMap = {}
+     for paper in listOfPapers: 
+         paperInfo = myQuery.query_paper(paper)
+         coAuthors = onlyCoAuthors(paperInfo.get("Author"), firstName, lastName)
+         coAuthorsMap.update({paperInfo.get("Title"): coAuthors})
+     return coAuthorsMap
 
 # helper function
 def Merge(dict1, dict2):
@@ -48,7 +49,7 @@ def printDictionary(dict):
 def query_co_author(firstName, lastName):
     # BUILD LEVEL 0
     # query papers by author 
-    level0ListOfPapers = queryByAuthor.query_author(firstName, lastName)
+    level0ListOfPapers = myQuery.query_author(firstName, lastName)
     # map of papers with co-authors 
     level0CoAuthorsMap = findCoAuthors(level0ListOfPapers, firstName, lastName)
     level0CoAuthorsList = buildCoAuthorsList(level0CoAuthorsMap)
@@ -59,7 +60,7 @@ def query_co_author(firstName, lastName):
     level1CoAuthorsMap = {}
     for author in level0CoAuthorsList: 
         name = author.split(' ', 1)
-        tempListOfPapers = queryByAuthor.query_author(name[0], name[1])
+        tempListOfPapers = myQuery.query_author(name[0], name[1])
         tempMap = findCoAuthors(tempListOfPapers, name[0], name[1])
         level1CoAuthorsMap = Merge(level1CoAuthorsMap, tempMap)
     level1CoAuthorsList = buildCoAuthorsList(level1CoAuthorsMap)
@@ -73,7 +74,7 @@ def query_co_author(firstName, lastName):
     level2CoAuthorsMap = {}
     for author in level1CoAuthorsList:
         name = author.split(' ', 1)
-        tempListOfPapers = queryByAuthor.query_author(name[0], name[1])
+        tempListOfPapers = myQuery.query_author(name[0], name[1])
         tempMap = findCoAuthors(tempListOfPapers, name[0], name[1])
         level2CoAuthorsMap = Merge(level2CoAuthorsMap, tempMap)
     level2CoAuthorsList = buildCoAuthorsList(level1CoAuthorsMap)
@@ -88,7 +89,7 @@ def query_co_author(firstName, lastName):
     level3CoAuthorsMap = {}
     for author in level2CoAuthorsList: 
         name = author.split(' ', 1)
-        tempListOfPapers = queryByAuthor.query_author(name[0], name[1])
+        tempListOfPapers = myQuery.query_author(name[0], name[1])
         tempMap = findCoAuthors(tempListOfPapers, name[0], name[1])
         level3CoAuthorsMap = Merge(level3CoAuthorsMap, tempMap)
     level3CoAuthorsList = buildCoAuthorsList(level2CoAuthorsMap)
@@ -104,4 +105,4 @@ def query_co_author(firstName, lastName):
     print()
     print(level3CoAuthorsList)
 
-# query_co_author("Martin", "Grohe")
+query_co_author("Martin", "Grohe")

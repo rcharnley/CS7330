@@ -1,6 +1,6 @@
 import re
 
-import certifi
+#import certifi
 from pymongo import MongoClient
 
 # parameter setting
@@ -9,7 +9,7 @@ database_name = "ProjectCS7330"
 authors_collection_name = "Authors"
 
 # connection protocol
-client = MongoClient(connection_string, ssl_ca_certs=certifi.where())
+client = MongoClient(connection_string)
 db = client.get_database(database_name)
 authors_collection = db.get_collection(authors_collection_name)
 

@@ -1,14 +1,14 @@
 from pymongo import MongoClient
 
 # parameter setting
-connection_string = "mongodb://localhost:27017/mydatabase"
-database_name = "mydatabase"
-authors_collection_name = "Authors"
+#connection_string = "mongodb+srv://rcharnley:ljfsRYJzLQJv0I0C@cluster0.817yp.mongodb.net/admin?ssl=true&ssl_cert_reqs=CERT_NONE"
+#database_name = "ProjectCS7330"
+#authors_collection_name = "Authors"
 
 # connection protocol
-client = MongoClient(connection_string)
-db = client.get_database(database_name)
-authors_collection = db.get_collection(authors_collection_name)
+#client = MongoClient(connection_string)
+#db = client.get_database(database_name)
+#authors_collection = db.get_collection(authors_collection_name)
 
 
 affiliation = []
@@ -51,15 +51,10 @@ def insertAuthor(lastName, firstName, affiliation, papers):
     return authors_dict
 
 if __name__=="__main__":
-    # parameter setting
-    connection_string = "mongodb://localhost:27017/mydatabase"
-    database_name = "mydatabase"
-    authors_collection_name = "Authors"
-
     # connection protocol
-    myclient = MongoClient(connection_string)
-    mydb = myclient[database_name]
-    mycol = mydb[authors_collection_name]
+    myclient = MongoClient("mongodb+srv://rcharnley:ljfsRYJzLQJv0I0C@cluster0.817yp.mongodb.net/admin?ssl=true&ssl_cert_reqs=CERT_NONE")
+    mydb = myclient["ProjectCS7330"]
+    mycol = mydb["Authors"]
 
     # call this function for multiple affiliation inserts
     _authorAffiliation("Raytheon", "2021-11-01")
@@ -71,9 +66,9 @@ if __name__=="__main__":
     _authorPapers("paper3")
 
     # this is the final author list to be inserted into mongodb
-    a = insertAuthor("Wisniewski", "Mike", affiliation, papers)
-
+    a = insertAuthor("Rosemary", "Charnley", affiliation, papers)
     print(a)
+
+    x = mycol.insert_one(a)
+    print(x.acknowledged)
     
-
-
