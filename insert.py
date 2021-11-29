@@ -115,7 +115,7 @@ class Insert:
             x = publications_collection.insert_one(publication_dict)
             return x.acknowledged
 
-
+'''
 if __name__=="__main__":
     from pymongo import MongoClient
 
@@ -138,3 +138,4 @@ if __name__=="__main__":
     # insert publication
     myInsert._authorPapers("CS7330 Project Write Up")
     myInsert.insertPublication("CS DBMS Conference", 1, "Dallas, TX")
+'''

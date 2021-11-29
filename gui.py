@@ -4,7 +4,15 @@ import tkinter as tk
 from database import Database
 from query import Query
 from bonus import Bonus
-import author_insert as author_insert
+from insert import Insert
+import tkinter.font as font
+import itertools as tool
+
+# Setup Tkinter Window
+window = Tk()
+window.title("Research Papers")
+window.geometry("600x600")
+window.config(bg = "#D6FEFF")
 
 def search():
     firstname = (firstname_var.get()).strip()
@@ -24,7 +32,7 @@ def search():
         for info in mapOfPaperInfo.values():
             if isinstance(info, list): 
                 info = ", ".join(info)
-            buildString.insert(END, info + '\n')
+            buildString.insert(END, info + "\n")
         buildString.pack()
         titleResults.mainloop()
     # [QUERY 2] The program should get the name of an author (just the name), and list of the papers for that author.
@@ -36,7 +44,7 @@ def search():
         authorResults.geometry("600x600")
         buildString = Text(authorResults)
         for paper in listOfPapers:
-            buildString.insert(END, paper + '\n')
+            buildString.insert(END, paper + "\n")
         buildString.pack()
         authorResults.mainloop()
     # [QUERY 3] The program should get the name of a publication, and a year range, and list of papers that is published within that range.
@@ -48,7 +56,7 @@ def search():
         publicationResults.geometry("600x600")
         buildString = Text(publicationResults)
         for paper in listOfPapers:
-            buildString.insert(END, paper + '\n')
+            buildString.insert(END, paper + "\n")
         buildString.pack()
         publicationResults.mainloop()
     firstname_var.set("")
@@ -58,86 +66,302 @@ def search():
     startyear_var.set("")
     endyear_var.set("")
 
-def removeSpaces(listOfItems, convertToInt): 
+def search_matching_name(): 
+    firstname = (firstname_var.get()).strip()
+    lastname = (lastname_var.get()).strip()
+    if firstname != "" and lastname != "": 
+        print("Search for papers by author " + firstname + " " + lastname + " who may share a name with another")
+        listOfPapers = myBonus.query_same_name_authors(firstname, lastname)
+        matchingNameResults = Toplevel(window)
+        matchingNameResults.title("Paper Results for Search by Author " + firstname + " " + lastname)
+        matchingNameResults.geometry("600x600")
+        buildString = Text(matchingNameResults)
+        for paper in listOfPapers:
+            buildString.insert(END, paper + "\n")
+        buildString.pack()
+        matchingNameResults.mainloop()
+    firstname_var.set("")
+    lastname_var.set("")
+
+def search_co_authors():
+    firstname = (firstname_var.get()).strip()
+    lastname = (lastname_var.get()).strip()
+    if firstname != "" and lastname != "": 
+        print("Search for Co-Authors for " + firstname + " " + lastname + ", level 0-3")
+        listOfPapers = myBonus.query_co_author(firstname, lastname)
+        levelsString = myBonus.buildLevelListString()
+        coAuthorResults = Toplevel(window)
+        coAuthorResults.title("Co-Author Results for Search by Author " + firstname + " " + lastname)
+        coAuthorResults.geometry("600x600")
+        buildString = Text(coAuthorResults)
+        buildString.insert(END, levelsString)
+        buildString.pack()
+        coAuthorResults.mainloop()
+    firstname_var.set("")
+    lastname_var.set("")
+
+def removeSpaces(listOfItems, convertToInt=False): 
     for i in range(len(listOfItems)):
         listOfItems[i] = listOfItems[i].strip()
         if convertToInt: 
             listOfItems[i] = int(listOfItems[i])
     return listOfItems
 
+def generateInsertWindow():
+    option = selection_var.get()
 
-def insert(): 
-    firstname = (fname_var.get()).strip()
-    lastname = (lname_var.get()).strip()
-    employer = removeSpaces(employer_var.get().split(','), False)
-    startyear = removeSpaces(syear_var.get().split(','), True)
-    endyear = removeSpaces(eyear_var.get().split(','), True)
-    papers = removeSpaces(papers_var.get().split(','), False)
-    thisInsert = author_insert.insertAuthor()
-    for i in range(len(employer)):
-        thisInsert._authorAffiliation(employer[i], startyear[i], endyear[i])
-    for paper in papers: 
-        thisInsert._authorPapers(paper)
-    authoObject = thisInsert.insertAuthor(lastname, firstname, thisInsert.affiliation, thisInsert.papers)
-    fname_var.set("")
-    lname_var.set("")
-    employer_var.set("")
-    syear_var.set("")
-    eyear_var.set("")
-    papers_var.set("")
+    # insert author variables
+    fname_var_auth = tk.StringVar()
+    lname_var_auth = tk.StringVar()
+    employer_var_auth = tk.StringVar()
+    syear_var_auth = tk.StringVar()
+    eyear_var_auth = tk.StringVar()
+    papers_var_auth = tk.StringVar()
+
+    # insert paper variables 
+    fname_var_paper = tk.StringVar()
+    lname_var_paper = tk.StringVar()
+    publication_var_paper = tk.StringVar()
+    title_var_paper = tk.StringVar()
+
+    # insert publication variables 
+    papers_var_pub = tk.StringVar()
+    name_var_pub = tk.StringVar()
+    iteration_var_pub = tk.IntVar()
+    location_var_pub = tk.StringVar()
+
+    if option == 1:
+        insertAuthorWindow = Toplevel(window)
+        insertAuthorWindow.title("Insert Author")
+        insertAuthorWindow.geometry("600x600")
+        insertAuthorWindow.config(bg = "#D6FEFF")
+        # Title section for insert Authot
+        Label(insertAuthorWindow, text = "INSERT AUTHOR", font = SubTitleFont, bg = "#D6FEFF").place(x = 0, y = 0)
+
+        # Enter first name to insert author  
+        g = Label(insertAuthorWindow ,text = "First Name", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 50)
+        g1 = Entry(insertAuthorWindow, textvariable = fname_var_auth).place(x = 75, y = 50)
+
     
+        # Enter last name to insert author  
+        h = Label(insertAuthorWindow ,text = "Last Name", font = LabelFont, bg = "#D6FEFF").place(x = 300, y = 50)
+        h1 = Entry(insertAuthorWindow, textvariable = lname_var_auth).place(x = 375, y = 50)
 
-# define classes
+        # Enter papers to insert author  
+        i = Label(insertAuthorWindow ,text = "Papers", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 100)
+        i1 = Entry(insertAuthorWindow, textvariable = papers_var_auth).place(x = 75, y = 100)
+        
+        # Enter employer to insert author  
+        j = Label(insertAuthorWindow ,text = "Employer", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 150)
+        j1 = Entry(insertAuthorWindow, textvariable = employer_var_auth).place(x = 75, y = 150)
+
+        # Enter start year to insert author  
+        k = Label(insertAuthorWindow ,text = "Start Date", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 200)
+        k1 = Entry(insertAuthorWindow, textvariable = syear_var_auth).place(x = 75, y = 200)
+
+        # Enter end year to insert author  
+        k = Label(insertAuthorWindow ,text = "End Date", font = LabelFont, bg = "#D6FEFF").place(x = 300, y = 200)
+        k1 = Entry(insertAuthorWindow, textvariable = eyear_var_auth).place(x = 375, y = 200)
+
+        firstname = (fname_var_auth.get()).strip()
+        lastname = (lname_var_auth.get()).strip()
+        paper = papers_var_auth.get()
+        paperList = removeSpaces(paper.split(","))
+        employer = employer_var_auth.get()
+        employerList = removeSpaces(employer.split(","))
+        startyear = employer_var_auth.get()
+        startyearList = removeSpaces(startyear.split(","))
+        endyear = eyear_var_auth.get()
+        endyearList = removeSpaces(endyear.split(","))
+
+        # Button to insert author provided
+        btn4 = ttk.Button(insertAuthorWindow ,text = "Insert Author", command = lambda: insertAuthor(firstname, lastname, paperList, employerList, startyearList, endyearList)).place(x = 0, y = 250)
+        
+        # Reset Values 
+        option = 0
+        fname_var_auth.set("")
+        lname_var_auth.set("")
+        employer_var_auth.set("")
+        syear_var_auth.set("")
+        eyear_var_auth.set("")
+        papers_var_auth.set("")
+
+    if option == 2: 
+        insertPaperWindow = Toplevel(window)
+        insertPaperWindow.title("Insert Paper")
+        insertPaperWindow.geometry("600x600")
+        insertPaperWindow.config(bg = "#D6FEFF")
+        # Title section for insert Author
+        Label(insertPaperWindow, text = "INSERT PAPER", font = SubTitleFont, bg = "#D6FEFF").place(x = 0, y = 0)
+
+        # Enter first name to insert author  
+        l = Label(insertPaperWindow ,text = "First Name", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 50)
+        l1 = Entry(insertPaperWindow, textvariable = fname_var_paper).place(x = 75, y = 50)
+
+        # Enter last name to insert author  
+        m = Label(insertPaperWindow ,text = "Last Name", font = LabelFont, bg = "#D6FEFF").place(x = 300, y = 50)
+        m1 = Entry(insertPaperWindow, textvariable = lname_var_paper).place(x = 375, y = 50)
+
+
+        # Enter paper titles name to insert author  
+        n = Label(insertPaperWindow ,text = "Paper Title", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 100)
+        n1 = Entry(insertPaperWindow, textvariable = title_var_paper).place(x = 75, y = 100)
+
+        # Enter publication to insert author  
+        n = Label(insertPaperWindow ,text = "Publication(s)", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 150)
+        n1 = Entry(insertPaperWindow, textvariable = publication_var_paper).place(x = 75, y = 150)
+        
+        firstname = fname_var_paper.get()
+        firstnameList = removeSpaces(firstname.split(","))
+        lastname = lname_var_paper.get()
+        lastnameList = removeSpaces(lastname.split(","))
+        title = (title_var_paper.get()).strip()
+        publication = publication_var_paper.get()
+        publicationList = removeSpaces(publication.split(","))
+
+        # Button to insert author provided
+        btn5 = ttk.Button(insertPaperWindow ,text = "Insert Paper", command = lambda: insertPaper(title, firstnameList, lastnameList, publicationList)).place(x = 0, y = 200)
+        
+        # Reset Values
+        option = 0
+        fname_var_paper.set("")
+        lname_var_paper.set("")
+        publication_var_paper.set("")
+        title_var_paper.set("")
+
+    if option == 3: 
+        insertPublicationWindow = Toplevel(window)
+        insertPublicationWindow.title("Insert Publication")
+        insertPublicationWindow.geometry("600x600")
+        insertPublicationWindow.config(bg = "#D6FEFF")
+        # Title section for insert Author
+        Label(insertPublicationWindow, text = "INSERT PUBLICATION", font = SubTitleFont, bg = "#D6FEFF").place(x = 0, y = 0)
+
+        # Enter conferecnce/journal name to insert publicationr  
+        l = Label(insertPublicationWindow ,text = "Conference/Journal Name", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 50)
+        l1 = Entry(insertPublicationWindow, textvariable = name_var_pub).place(x = 150, y = 50)
+
+        # Enter paper location to insert publication
+        l = Label(insertPublicationWindow ,text = "Location", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 100)
+        l1 = Entry(insertPublicationWindow, textvariable = location_var_pub).place(x = 75, y = 100)
+
+        # Enter ieration to insert publication  
+        m = Label(insertPublicationWindow ,text = "Iterations", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 150)
+        m1 = Entry(insertPublicationWindow, textvariable = iteration_var_pub).place(x = 75, y = 150)
+
+        # Enter paper titles to insert publication  
+        l = Label(insertPublicationWindow ,text = "Paper Titles:", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 200)
+        l1 = Entry(insertPublicationWindow, textvariable = papers_var_pub).place(x = 75, y = 200)
+
+        paper = papers_var_pub.get()
+        paperList = removeSpaces(paper.split(","))
+        name = (name_var_pub.get()).strip()
+        iteration = iteration_var_pub.get()
+        location = location_var_pub.get()
+        
+        # Button to insert author provided
+        btn5 = ttk.Button(insertPublicationWindow ,text = "Insert Publication", command = lambda: insertPublication(paperList, name, iteration, location)).place(x = 0, y = 250)
+        option = 0
+
+def insertAuthor(firstname, lastname, paperList, employerList, startyearList, endyearList = []): 
+    thisInsert = Insert(Database("rcharnley", "ljfsRYJzLQJv0I0C"))
+    index = 0
+    for employer, start, end in tool.zip_longest(employerList, startyearList, endyearList):
+        if end: thisInsert._authorAffiliation(employerList[index], startyearList[index], endyearList[index])
+        else: thisInsert._authorAffiliation(employerList[index], startyearList[index], endyearList[index])
+        index = index + 1
+    for paper in paperList: 
+        thisInsert._authorPapers(paper)
+    thisInsert.insertAuthor(firstname, lastname)
+
+def insertPaper(title, firstnameList, lastnameList, publicationList): 
+    thisInsert = Insert(Database("rcharnley", "ljfsRYJzLQJv0I0C"))
+    for first, last in zip(firstnameList, lastnameList):
+        thisInsert._paperAuthors(first, last)
+    for pub in publicationList:
+        thisInsert._paperPublications(pub)
+    thisInsert.insertPaper(title)
+
+def insertPublication(paperList, name, iteration, location):
+    thisInsert = Insert(Database("rcharnley", "ljfsRYJzLQJv0I0C"))
+    for paper in paperList:
+        thisInsert._authorPapers(paper)
+    thisInsert.insertPublication(name, iteration, location)
+
+
+# Define classes
 myDB = Database("rcharnley", "ljfsRYJzLQJv0I0C")
 myQuery = Query(myDB)
 myBonus = Bonus(myDB, myQuery)
-#Set tkinter Window
-window = Tk()
-window.title("Research Papers")
-window.geometry('700x600')
-window.configure(background = "white")
-# query variables
-firstname_var = tk.StringVar()
+myInsert = Insert(myDB)           
+
+# Query variables     
+firstname_var = tk.StringVar()      
 lastname_var = tk.StringVar()
 title_var = tk.StringVar()
 publication_var = tk.StringVar()
 startyear_var = tk.StringVar()
 endyear_var = tk.StringVar()
-# insert variables
-fname_var = tk.StringVar()
-lname_var = tk.StringVar()
-employer_var = tk.StringVar()
-syear_var = tk.StringVar()
-eyear_var = tk.StringVar()
-papers_var = tk.StringVar()
-window.columnconfigure(0, weight=1)
-Label(window, text = 'SEARCH DATABASE').grid(row = 0, sticky = "ew")
-a = Label(window ,text = "First Name").grid(row = 1,column = 0)
-b = Label(window ,text = "Last Name").grid(row = 1,column = 2)
-c = Label(window ,text = "Title").grid(row = 2,column = 0)
-d = Label(window ,text = "Publication").grid(row = 3,column = 0)
-e = Label(window ,text = "Start Year").grid(row = 4,column = 0)
-f = Label(window ,text = "End Year").grid(row = 4,column = 2)
-a1 = Entry(window, textvariable = firstname_var).grid(row = 1,column = 1)
-b1 = Entry(window, textvariable = lastname_var).grid(row = 1,column = 3)
-c1 = Entry(window, textvariable = title_var).grid(row = 2,column = 1)
-d1 = Entry(window, textvariable = publication_var).grid(row = 3,column = 1)
-e1 = Entry(window, textvariable = startyear_var).grid(row = 4,column = 1)
-f1 = Entry(window, textvariable = endyear_var).grid(row = 4,column = 3)
-btn = ttk.Button(window ,text = "Search", command = search).grid(row=6,column=0)
-window.columnconfigure(0, weight=1)
-Label(window, text = 'INSERT DATABASE').grid(row = 7, sticky = "ew")
-g = Label(window ,text = "First Name").grid(row = 8,column = 0)
-h = Label(window ,text = "Last Name").grid(row = 8,column = 2)
-i = Label(window ,text = "Employer").grid(row = 9,column = 0)
-j = Label(window ,text = "Start Year").grid(row = 10,column = 0)
-k = Label(window ,text = "End Year").grid(row = 10,column = 2)
-l = Label(window ,text = "Papers").grid(row = 11,column = 0)
-g1 = Entry(window, textvariable = fname_var).grid(row = 8,column = 1)
-h1 = Entry(window, textvariable = lname_var).grid(row = 8,column = 3)
-i1 = Entry(window, textvariable = employer_var).grid(row = 9,column = 1)
-j1 = Entry(window, textvariable = syear_var).grid(row = 10,column = 1)
-k1 = Entry(window, textvariable = eyear_var).grid(row = 10,column = 3)
-k1 = Entry(window, textvariable = papers_var).grid(row = 11,column = 1)
-btn = ttk.Button(window ,text = "Insert", command = insert).grid(row=12, column=0)
+
+# Insert selection variable 
+selection_var = tk.IntVar()
+
+# Font Types
+TitleFont = font.Font(family = "Times New Roman", size = "16")
+SubTitleFont = font.Font(family = "Times New Roman", size = "14")
+LabelFont = font.Font(family = "Times New Roman", size = "12")
+
+# Title for search section
+Label(window, text = "SEARCH DATABASE", font = TitleFont, bg = "#D6FEFF").place(x = 0, y = 0)
+
+# Enter first name to query 
+a = Label(window ,text = "First Name", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 50)
+a1 = Entry(window, textvariable = firstname_var).place(x = 75, y = 50)
+
+# Enter last name to query 
+b = Label(window ,text = "Last Name", font = LabelFont, bg = "#D6FEFF").place(x = 300, y = 50)
+b1 = Entry(window, textvariable = lastname_var).place(x = 375, y = 50)
+
+# Enter paper titles to query 
+c = Label(window ,text = "Title", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 100)
+c1 = Entry(window, textvariable = title_var).place(x = 75, y = 100)
+
+# Enter publication ot query 
+d = Label(window ,text = "Publication", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 150)
+d1 = Entry(window, textvariable = publication_var).place(x = 75, y = 150)
+
+# Enter start year to query 
+e = Label(window ,text = "Start Year", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 200)
+e1 = Entry(window, textvariable = startyear_var).place(x = 75, y = 200)
+
+
+# Enter end year to query  
+f = Label(window ,text = "End Year", font = LabelFont, bg = "#D6FEFF").place(x = 300, y = 200)
+f1 = Entry(window, textvariable = endyear_var).place(x = 375, y = 200)
+
+# Button to  query information provided
+# Checks occur in search
+btn1 = ttk.Button(window ,text = "Search", command = search).place(x = 0, y = 250)
+
+# Button to query information provided if name is believed to be duplicate
+# Checks occur in search
+btn2 = ttk.Button(window ,text = "Search Matching Name", command = search_matching_name).place(x = 100, y = 250)
+
+# Button to query information provided searching for co-authors
+# Checks occur in search
+btn3 = ttk.Button(window ,text = "Search for Co-Authors", command = search_co_authors).place(x = 300, y = 250)
+
+# Title for insert section
+Label(window, text = "INSERT INTO DATABASE", font = TitleFont, bg = "#D6FEFF").place(x = 0, y = 300)
+# Title section for insert Authot
+Label(window, text = "Select type of insert: ", font = SubTitleFont, bg = "#D6FEFF").place(x = 0, y = 350)
+
+# Radio Button to decide type of insert 
+Radiobutton(window,text="Author", variable= selection_var, value=1, bg = "#D6FEFF", font = LabelFont).place(x=100,y=375)
+Radiobutton(window,text="Paper", variable= selection_var, value=2, bg = "#D6FEFF", font = LabelFont).place(x=200,y=375)
+Radiobutton(window,text="Publication", variable= selection_var, value=3, bg = "#D6FEFF", font = LabelFont).place(x=300,y=375)
+
+# Button to submit selection
+btn4 = ttk.Button(window ,text = "Submit", command = generateInsertWindow).place(x = 0, y = 400)
+
 window.mainloop()

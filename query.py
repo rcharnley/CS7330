@@ -23,8 +23,10 @@ class Query:
         for document in paper_cursor:
             paperInfo.update({"Title": document['title']})
             paperInfo.update({"Author": [*document['authors']]})
-            #paperInfo.update({"URL": document['URL']})
-            #paperInfo.update({"Page Number": document['page_number']})
+            if document.__contains__('url'):
+                paperInfo.update({"URL": document['url']})
+            if document.__contains__('page_number'):
+                paperInfo.update({"Page Number": document['page_number']})
             paperInfo.update({"Publication": [*document['publication']]})
 
         return paperInfo
@@ -94,6 +96,6 @@ class Query:
 '''
 myQuery = Query(Database("rcharnley", "ljfsRYJzLQJv0I0C"))
 print(myQuery.query_paper("The Meaning of Null in Databases and Programming Languages"))
-myQuery.print_result(myQuery.query_author("Siddhant", "Arora"))
+myQuery.print_result(myQuery.query_author("Peter", "Lindner"))
 myQuery.print_result(myQuery.query_publication("ACM SIGMOD International Conference on Management of Data"))
 '''

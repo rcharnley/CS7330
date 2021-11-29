@@ -10,6 +10,12 @@ class Bonus:
         self.level1 = []
         self.level2 = []
         self.level3 = []
+    
+    @staticmethod
+    def print_result(collection):
+        for document in collection:
+            print(document)
+        print('------------------')
 
     # [BONUS 1] The program should get the name of an author, and return the list of papers that he/she authored. 
     # However, if there is reason to believe that there are multiple authors that have the same name 
@@ -54,20 +60,13 @@ class Bonus:
     @staticmethod
     def onlyCoAuthors(authors, firstName, lastName):
         name = firstName + " " + lastName
-        authors.remove(name)
-        return authors
-    
-    @staticmethod
-    def print_result(collection):
-        for document in collection:
-            print(document)
-        print('------------------')
+        authors = [i for i in authors if i != name]
+        return authors  
 
-    @staticmethod
     def findCoAuthors(self, listOfPapers, firstName, lastName): 
         coAuthorsMap = {}
         for paper in listOfPapers: 
-            paperInfo = self.query.query_paper(paper)
+            paperInfo = self.query.query_paper(title = paper)
             coAuthors = self.onlyCoAuthors(paperInfo.get("Author"), firstName, lastName)
             coAuthorsMap.update({paperInfo.get("Title"): coAuthors})
         return coAuthorsMap
@@ -89,17 +88,17 @@ class Bonus:
         # query papers by author 
         level0ListOfPapers = self.query.query_author(firstName, lastName)
         # map of papers with co-authors 
-        level0CoAuthorsMap = self.findCoAuthors(self, level0ListOfPapers, firstName, lastName)
+        level0CoAuthorsMap = self.findCoAuthors(level0ListOfPapers, firstName, lastName)
         level0CoAuthorsList = self.buildCoAuthorsList(level0CoAuthorsMap)
-        # print(level0CoAuthorsMap)
-        # print(level0CoAuthorsList)
+        #print(level0CoAuthorsMap)
+        #print(level0CoAuthorsList)
 
         # BUILD LEVEL 1
         level1CoAuthorsMap = {}
         for author in level0CoAuthorsList: 
             name = author.split(' ', 1)
-            tempListOfPapers = self.query.query_author(firstName, lastName)
-            tempMap = self.findCoAuthors(self, tempListOfPapers, firstName, lastName)
+            tempListOfPapers = self.query.query_author(name[0], name[1])
+            tempMap = self.findCoAuthors(tempListOfPapers, name[0], name[1])
             level1CoAuthorsMap = self.Merge(level1CoAuthorsMap, tempMap)
         level1CoAuthorsList = self.buildCoAuthorsList(level1CoAuthorsMap)
         level0CoAuthorsSet = set((level0CoAuthorsList))
@@ -112,8 +111,8 @@ class Bonus:
         level2CoAuthorsMap = {}
         for author in level1CoAuthorsList:
             name = author.split(' ', 1)
-            tempListOfPapers = self.query.query_author(firstName, lastName)
-            tempMap = self.findCoAuthors(self, tempListOfPapers, firstName, lastName)
+            tempListOfPapers = self.query.query_author(name[0], name[1])
+            tempMap = self.findCoAuthors(tempListOfPapers, name[0], name[1])
             level2CoAuthorsMap = self.Merge(level2CoAuthorsMap, tempMap)
         level2CoAuthorsList = self.buildCoAuthorsList(level1CoAuthorsMap)
         level1CoAuthorsSet = set((level1CoAuthorsList))
@@ -127,8 +126,8 @@ class Bonus:
         level3CoAuthorsMap = {}
         for author in level2CoAuthorsList: 
             name = author.split(' ', 1)
-            tempListOfPapers = self.query.query_author(firstName, lastName)
-            tempMap = self.findCoAuthors(self, tempListOfPapers, firstName, lastName)
+            tempListOfPapers = self.query.query_author(name[0], name[1])
+            tempMap = self.findCoAuthors(tempListOfPapers, name[0], name[1])
             level3CoAuthorsMap = self.Merge(level3CoAuthorsMap, tempMap)
         level3CoAuthorsList = self.buildCoAuthorsList(level2CoAuthorsMap)
         level2CoAuthorsSet = set((level2CoAuthorsList))
@@ -140,22 +139,9 @@ class Bonus:
         self.level2 = level2CoAuthorsList
         self.level3  = level3CoAuthorsList
     
-    def printLevelList(self):
-        print("Level 0 Co-Authors")
-        print('-------------------------------------------')
-        print(self.level0)
-        print("Level 1 Co-Authors")
-        print('-------------------------------------------')
-        print(self.level1)
-        print("Level 2 Co-Authors")
-        print('-------------------------------------------')
-        print(self.level2)
-        print("Level 3 Co-Authors")
-        print('-------------------------------------------')
-        print(self.level3)
-
-
-
+    def buildLevelListString(self):
+        buildString = "Level 0 Co-Authors\n" +"-------------------------------------------\n" + str(self.level0) + "\n" + "Level 1 Co-Authors\n" + "-------------------------------------------\n" +str(self.level1)+"\n"+"Level 2 Co-Authors\n"+"-------------------------------------------\n" + str(self.level2)+"\n"+"Level 3 Co-Authors\n" + "-------------------------------------------\n" + str(self.level3)
+        return buildString
 
 # [Test Bonus Class] returns and prints bonus results for Bonus class
 '''
@@ -163,6 +149,6 @@ myDB = Database("rcharnley", "ljfsRYJzLQJv0I0C")
 myQuery = Query(myDB)
 myBonus = Bonus(myDB, myQuery)
 myBonus.query_same_name_authors("Martin", "Grohe")
-myBonus.query_co_author("Martin", "Grohe")
-myBonus.printLevelList()
+myBonus.query_co_author("Peter", "Lindner")
+print(myBonus.buildLevelListString())
 '''
