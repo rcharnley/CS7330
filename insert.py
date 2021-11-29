@@ -51,8 +51,11 @@ class Insert:
         author_collection = self.db.getAuthorsCollection()
 
         # insert created authors dict into authors collection
-        x = author_collection.insert_one(authors_dict)
-        print(x.acknowledged)
+        if author_collection.find(authors_dict):
+            return "Error, an authors document the same as this already exists in this Database.  Please insert another unique document"
+        else:
+            x = author_collection.insert_one(authors_dict)
+            return x.acknowledged
 
     def _paperAuthors(self, firstName, lastName):
         # clear list 
@@ -89,9 +92,12 @@ class Insert:
         # get papers collection
         paper_collection = self.db.getPapersCollection()
 
-        # insert created authors dict into authors collection
-        x = paper_collection.insert_one(papers_dict)
-        print(x.acknowledged)
+        # insert created papers dict into papers collection
+        if paper_collection.find(papers_dict):
+            return "Error, a papers document the same as this already exists in this Database.  Please insert another unique document"
+        else:
+            x = paper_collection.insert_one(papers_dict)
+            return x.acknowledged
 
     def insertPublication(self, name, iteration, location):
         publication_dict = {}
@@ -102,9 +108,12 @@ class Insert:
         # get publications collection
         publications_collection = self.db.getPublicationsCollection()
 
-        # insert created authors dict into authors collection
-        x = publications_collection.insert_one(publication_dict)
-        print(x.acknowledged)
+        # insert created publications dict into publications collection
+        if publications_collection.find(publication_dict):
+            return "Error, a Publications document the same as this already exists in this Database.  Please insert another unique document"
+        else:
+            x = publications_collection.insert_one(publication_dict)
+            return x.acknowledged
 
 
 if __name__=="__main__":
