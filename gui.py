@@ -212,20 +212,20 @@ def generateInsertWindow():
         Label(insertPublicationWindow, text = "INSERT PUBLICATION", font = SubTitleFont, bg = "#D6FEFF").place(x = 0, y = 0)
 
         # Enter conferecnce/journal name to insert publicationr  
-        l = Label(insertPublicationWindow ,text = "Conference/Journal Name", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 50)
-        l1 = Entry(insertPublicationWindow, textvariable = name_var_pub).place(x = 150, y = 50)
+        r = Label(insertPublicationWindow ,text = "Conference/Journal Name", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 50)
+        r1 = Entry(insertPublicationWindow, textvariable = name_var_pub).place(x = 150, y = 50)
 
         # Enter paper location to insert publication
-        l = Label(insertPublicationWindow ,text = "Location", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 100)
-        l1 = Entry(insertPublicationWindow, textvariable = location_var_pub).place(x = 75, y = 100)
+        s = Label(insertPublicationWindow ,text = "Location", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 100)
+        s1 = Entry(insertPublicationWindow, textvariable = location_var_pub).place(x = 75, y = 100)
 
         # Enter ieration to insert publication  
-        m = Label(insertPublicationWindow ,text = "Iterations", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 150)
-        m1 = Entry(insertPublicationWindow, textvariable = iteration_var_pub).place(x = 75, y = 150)
+        t = Label(insertPublicationWindow ,text = "Iterations", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 150)
+        t1 = Entry(insertPublicationWindow, textvariable = iteration_var_pub).place(x = 75, y = 150)
 
         # Enter paper titles to insert publication  
-        l = Label(insertPublicationWindow ,text = "Paper Titles:", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 200)
-        l1 = Entry(insertPublicationWindow, textvariable = papers_var_pub).place(x = 75, y = 200)
+        u = Label(insertPublicationWindow ,text = "Paper Titles:", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 200)
+        u1 = Entry(insertPublicationWindow, textvariable = papers_var_pub).place(x = 75, y = 200)
 
         # Button to insert author provided
         btn5 = ttk.Button(insertPublicationWindow ,text = "Insert Publication", command = lambda: insertPublication(removeSpaces((papers_var_pub.get()).split(",")), (name_var_pub.get()).strip(), iteration_var_pub.get(), location_var_pub.get())).place(x = 0, y = 250)
@@ -243,6 +243,8 @@ def generateInsertWindow():
     lname_var_paper.set("")
     publication_var_paper.set("")
     title_var_paper.set("")
+    url_var_paper.set("")
+    page_num_var_paper.set("")
 
     papers_var_pub.set("")
     name_var_pub.set("")
