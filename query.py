@@ -94,7 +94,7 @@ class Query:
 
 # [Test Query Class] returns and prints query results for Query class
 
-myQuery = Query(Database("rcharnley", "ljfsRYJzLQJv0I0C"))
-#print(myQuery.query_paper("The Meaning of Null in Databases and Programming Languages"))
-#myQuery.print_result(myQuery.query_author("Peter", "Lindner"))
-myQuery.print_result(myQuery.query_publication("ACM SIGMOD International Conference on Management of Data", 2000, 2020))
+# myQuery = Query(Database("rcharnley", "ljfsRYJzLQJv0I0C"))
+# #print(myQuery.query_paper("The Meaning of Null in Databases and Programming Languages"))
+# #myQuery.print_result(myQuery.query_author("Peter", "Lindner"))
+# myQuery.print_result(myQuery.query_publication("ACM SIGMOD International Conference on Management of Data", 2000, 2020))

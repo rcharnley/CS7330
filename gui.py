@@ -49,14 +49,14 @@ def search():
         authorResults.mainloop()
     # [QUERY 3] The program should get the name of a publication, and a year range, and list of papers that is published within that range.
     if publication != "" and startyear != 0 and endyear != 0: 
-        listOfPapers = myQuery.query_publication(publication, str(startyear), str(endyear))
+        listOfPapers = myQuery.query_publication(publication, startyear, endyear)
         print("Search for papers by publication " + publication + " between the years of " + str(startyear) + " and " + str(endyear))
         publicationResults = Toplevel(window)
         publicationResults.title("Paper Results for Search by Publication " + publication)
         publicationResults.geometry("600x600")
         buildString = Text(publicationResults)
         for paper in listOfPapers:
-            buildString.insert(END, paper + "\n")
+            buildString.insert(END, str(paper) + "\n")
         buildString.pack()
         publicationResults.mainloop()
     firstname_var.set("")
