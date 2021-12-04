@@ -103,9 +103,10 @@ class Insert:
         x = paper_collection.insert_one(papers_dict)
         return x.acknowledged
 
-    def insertPublication(self, name, iteration, location):
+    def insertPublication(self, name, iteration, location, year):
         publication_dict = {}
         publication_dict["name"] = name
+        publication_dict["year"] = year
         publication_dict["conference_details"] = {"iteration": iteration, "location": location}
         publication_dict["Papers"] = self.papers
 
