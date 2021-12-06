@@ -142,6 +142,6 @@ if __name__=="__main__":
     # myInsert._paperPublications("SMU")
     # myInsert.insertPaper("CS7330 Project Paper", "Google", 4)
 
-    # # insert publication
-    # myInsert._authorPapers("CS7330 Project Write Up")
-    # print(myInsert.insertPublication("CS DBMS Conference", 20, "Dallas, TX"))
+    # insert publication
+    # myInsert._authorPapers("Paper 1, Paper 2")
+    # print(myInsert.insertPublication("Some Journal", 20, "Dallas, TX", 2019))

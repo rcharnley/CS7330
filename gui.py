@@ -131,6 +131,7 @@ def generateInsertWindow():
     name_var_pub = tk.StringVar()
     iteration_var_pub = tk.IntVar()
     location_var_pub = tk.StringVar()
+    year_var_pub = tk.StringVar()
 
     if option == 1:
         insertAuthorWindow = Toplevel(window)
@@ -219,16 +220,19 @@ def generateInsertWindow():
         s = Label(insertPublicationWindow ,text = "Location", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 100)
         s1 = Entry(insertPublicationWindow, textvariable = location_var_pub).place(x = 75, y = 100)
 
-        # Enter ieration to insert publication  
+        # Enter iteration to insert publication  
         t = Label(insertPublicationWindow ,text = "Iterations", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 150)
         t1 = Entry(insertPublicationWindow, textvariable = iteration_var_pub).place(x = 75, y = 150)
 
+        u = Label(insertPublicationWindow ,text = "Year", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 200)
+        u1 = Entry(insertPublicationWindow, textvariable = year_var_pub).place(x = 75, y = 200)
+
         # Enter paper titles to insert publication  
-        u = Label(insertPublicationWindow ,text = "Paper Titles:", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 200)
-        u1 = Entry(insertPublicationWindow, textvariable = papers_var_pub).place(x = 75, y = 200)
+        v = Label(insertPublicationWindow ,text = "Paper Titles:", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 250)
+        v1 = Entry(insertPublicationWindow, textvariable = papers_var_pub).place(x = 75, y = 250)
 
         # Button to insert author provided
-        btn5 = ttk.Button(insertPublicationWindow ,text = "Insert Publication", command = lambda: insertPublication(removeSpaces((papers_var_pub.get()).split(",")), (name_var_pub.get()).strip(), iteration_var_pub.get(), location_var_pub.get())).place(x = 0, y = 250)
+        btn5 = ttk.Button(insertPublicationWindow ,text = "Insert Publication", command = lambda: insertPublication(removeSpaces((papers_var_pub.get()).split(",")), (name_var_pub.get()).strip(), iteration_var_pub.get(), location_var_pub.get())).place(x = 0, y = 300)
     
     # Reset
     option = 0
@@ -250,6 +254,7 @@ def generateInsertWindow():
     name_var_pub.set("")
     iteration_var_pub.set("")
     location_var_pub.set("")
+    year_var_pub.set("")
         
 def insertAuthor(firstname, lastname, paperList, employerList, startyearList, endyearList = []): 
     thisInsert = Insert(Database("rcharnley", "ljfsRYJzLQJv0I0C"))
@@ -270,11 +275,11 @@ def insertPaper(title, firstnameList, lastnameList, publicationList, url, pageNu
         thisInsert._paperPublications(pub)
     thisInsert.insertPaper(title, url, pageNum)
 
-def insertPublication(paperList, name, iteration, location):
+def insertPublication(paperList, name, iteration, location, year):
     thisInsert = Insert(Database("rcharnley", "ljfsRYJzLQJv0I0C"))
     for paper in paperList:
         thisInsert._authorPapers(paper)
-    thisInsert.insertPublication(name, iteration, location)
+    thisInsert.insertPublication(name, iteration, location, int(year))
 
 
 # Define classes
