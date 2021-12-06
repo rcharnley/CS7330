@@ -23,8 +23,10 @@ class Query:
         for document in paper_cursor:
             paperInfo.update({"Title": document['title']})
             paperInfo.update({"Author": [*document['authors']]})
-            #paperInfo.update({"URL": document['URL']})
-            #paperInfo.update({"Page Number": document['page_number']})
+            if document.__contains__('url'):
+                paperInfo.update({"URL": document['url']})
+            if document.__contains__('page_number'):
+                paperInfo.update({"Page Number": document['page_number']})
             paperInfo.update({"Publication": [*document['publication']]})
 
         return paperInfo
@@ -70,7 +72,7 @@ class Query:
             filter.append({"year": {"$lte": end_year}})
         if name is not None:
             name_regex = re.compile(name, re.IGNORECASE)
-            filter.append({"name": name_regex})
+            filter.append({"name": name})
 
         if len(filter):
             filter = {"$and": filter}
@@ -78,22 +80,27 @@ class Query:
             filter = {}
 
         results = publications_collection.find(filter)
+        print(results)
         publications = []
+        papers = []
         for publication in results:
             pub_key = "conference_details" if "conference_details" in publication.keys() else "journal_details"
-            pub = {"name": publication['name'],
+            pub = {
+                "name": publication['name'],
                 "year": publication['year'],
                 "iteration": publication['iteration'],
                 pub_key : publication[pub_key],
-                "papers": publication['papers']}
+                "papers": publication['papers']
+                }
             publications.append(pub)
-        return publications
+            papers = papers + pub['papers']
+        
+        return papers
 
 
 # [Test Query Class] returns and prints query results for Query class
-'''
-myQuery = Query(Database("rcharnley", "ljfsRYJzLQJv0I0C"))
-print(myQuery.query_paper("The Meaning of Null in Databases and Programming Languages"))
-myQuery.print_result(myQuery.query_author("Siddhant", "Arora"))
-myQuery.print_result(myQuery.query_publication("ACM SIGMOD International Conference on Management of Data"))
-'''
+
+# myQuery = Query(Database("rcharnley", "ljfsRYJzLQJv0I0C"))
+# print(myQuery.query_paper("The Meaning of Null in Databases and Programming Languages"))
+# myQuery.print_result(myQuery.query_author("Peter", "Lindner"))
+# print(myQuery.query_publication("ACM SIGMOD International Conference on Management of Data", 2000, 2020))
