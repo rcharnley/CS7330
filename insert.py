@@ -102,7 +102,9 @@ class Insert:
     def insertPublication(self, name, iteration, location):
         publication_dict = {}
         publication_dict["name"] = name
-        publication_dict["conference_details"] = {"iteration": iteration, "location": location}
+        publication_dict["year"] = 2020
+        publication_dict["iteration"] = iteration
+        publication_dict["conference_details"] = {"location": location}
         publication_dict["Papers"] = self.papers
 
         # get publications collection
