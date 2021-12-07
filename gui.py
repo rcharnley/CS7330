@@ -135,12 +135,19 @@ def generateInsertWindow():
     url_var_paper = tk.StringVar()
     page_num_var_paper = tk.StringVar()
 
-    # insert publication variables 
-    papers_var_pub = tk.StringVar()
-    name_var_pub = tk.StringVar()
-    iteration_var_pub = tk.IntVar()
-    location_var_pub = tk.StringVar()
-    year_var_pub = tk.StringVar()
+    # insert conference variables 
+    papers_var_conf = tk.StringVar()
+    name_var_conf = tk.StringVar()
+    iteration_var_conf = tk.StringVar()
+    location_var_conf = tk.StringVar()
+    year_var_conf = tk.IntVar()
+
+    # insert journal variables
+    papers_var_jour = tk.StringVar()
+    name_var_jour = tk.StringVar()
+    iteration_var_jour = tk.StringVar()
+    year_var_jour = tk.IntVar()
+    vol_var_jour = tk.StringVar()
 
     if option == 1:
         insertAuthorWindow = Toplevel(window)
@@ -176,7 +183,7 @@ def generateInsertWindow():
         l1 = Entry(insertAuthorWindow, textvariable = eyear_var_auth).place(x = 375, y = 200)
 
         # Button to insert author provided
-        btn4 = ttk.Button(insertAuthorWindow ,text = "Insert Author", command = lambda: insertAuthor((fname_var_auth.get()).strip(","), (lname_var_auth.get()).strip(), removeSpaces((papers_var_auth.get()).split(",")), removeSpaces((employer_var_auth.get()).split(",")), removeSpaces((syear_var_auth.get()).split(",")), removeSpaces((eyear_var_auth.get()).split(",")) )).place(x = 0, y = 300)
+        btn4 = ttk.Button(insertAuthorWindow ,text = "Insert Author", command = lambda: insertAuthor((fname_var_auth.get()).strip(","), (lname_var_auth.get()).strip(), removeSpaces((papers_var_auth.get()).split(",")), removeSpaces((employer_var_auth.get()).split(",")), removeSpaces((syear_var_auth.get()).split(",")), removeSpaces((eyear_var_auth.get()).split(",")) )).place(x = 0, y = 250)
         
     if option == 2: 
         insertPaperWindow = Toplevel(window)
@@ -214,34 +221,64 @@ def generateInsertWindow():
         btn5 = ttk.Button(insertPaperWindow ,text = "Insert Paper", command = lambda: insertPaper((title_var_paper.get()).strip(), removeSpaces((fname_var_paper.get()).split(",")), removeSpaces((lname_var_paper.get()).split(",")), removeSpaces((publication_var_paper.get()).split(",")), (url_var_paper.get()).strip(), (page_num_var_paper.get()).strip() )).place(x = 0, y = 250)
         
     if option == 3: 
-        insertPublicationWindow = Toplevel(window)
-        insertPublicationWindow.title("Insert Publication")
-        insertPublicationWindow.geometry("600x600")
-        insertPublicationWindow.config(bg = "#D6FEFF")
+        insertConferenceWindow = Toplevel(window)
+        insertConferenceWindow.title("Insert Conference")
+        insertConferenceWindow.geometry("600x600")
+        insertConferenceWindow.config(bg = "#D6FEFF")
         # Title section for insert Author
-        Label(insertPublicationWindow, text = "INSERT PUBLICATION", font = SubTitleFont, bg = "#D6FEFF").place(x = 0, y = 0)
+        Label(insertConferenceWindow, text = "INSERT CONFERENCE", font = SubTitleFont, bg = "#D6FEFF").place(x = 0, y = 0)
 
         # Enter conferecnce/journal name to insert publicationr  
-        r = Label(insertPublicationWindow ,text = "Conference/Journal Name", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 50)
-        r1 = Entry(insertPublicationWindow, textvariable = name_var_pub).place(x = 150, y = 50)
+        r = Label(insertConferenceWindow ,text = "Conference Name", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 50)
+        r1 = Entry(insertConferenceWindow, textvariable = name_var_conf).place(x = 100, y = 50)
 
         # Enter paper location to insert publication
-        s = Label(insertPublicationWindow ,text = "Location", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 100)
-        s1 = Entry(insertPublicationWindow, textvariable = location_var_pub).place(x = 75, y = 100)
+        s = Label(insertConferenceWindow ,text = "Location", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 100)
+        s1 = Entry(insertConferenceWindow, textvariable = location_var_conf).place(x = 75, y = 100)
 
         # Enter iteration to insert publication  
-        t = Label(insertPublicationWindow ,text = "Iterations", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 150)
-        t1 = Entry(insertPublicationWindow, textvariable = iteration_var_pub).place(x = 75, y = 150)
+        t = Label(insertConferenceWindow ,text = "Iterations", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 150)
+        t1 = Entry(insertConferenceWindow, textvariable = iteration_var_conf).place(x = 75, y = 150)
 
-        u = Label(insertPublicationWindow ,text = "Year", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 200)
-        u1 = Entry(insertPublicationWindow, textvariable = year_var_pub).place(x = 75, y = 200)
+        u = Label(insertConferenceWindow ,text = "Year", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 200)
+        u1 = Entry(insertConferenceWindow, textvariable = year_var_conf).place(x = 75, y = 200)
 
         # Enter paper titles to insert publication  
-        v = Label(insertPublicationWindow ,text = "Paper Titles:", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 250)
-        v1 = Entry(insertPublicationWindow, textvariable = papers_var_pub).place(x = 75, y = 250)
+        v = Label(insertConferenceWindow ,text = "Paper Titles:", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 250)
+        v1 = Entry(insertConferenceWindow, textvariable = papers_var_conf).place(x = 75, y = 250)
 
         # Button to insert author provided
-        btn5 = ttk.Button(insertPublicationWindow ,text = "Insert Publication", command = lambda: insertPublication(removeSpaces((papers_var_pub.get()).split(",")), (name_var_pub.get()).strip(), iteration_var_pub.get(), location_var_pub.get())).place(x = 0, y = 300)
+        btn5 = ttk.Button(insertConferenceWindow ,text = "Insert Conference", command = lambda: insertConference( removeSpaces((papers_var_conf.get()).split(",")), (name_var_conf.get()).strip(), (iteration_var_conf.get()).strip(), year_var_conf.get(), (location_var_conf.get()).strip() )).place(x = 0, y = 300)
+    
+    if option == 4: 
+        insertJournalWindow = Toplevel(window)
+        insertJournalWindow.title("Insert Journal")
+        insertJournalWindow.geometry("600x600")
+        insertJournalWindow.config(bg = "#D6FEFF")
+        # Title section for insert Author
+        Label(insertJournalWindow, text = "INSERT JOURNAL", font = SubTitleFont, bg = "#D6FEFF").place(x = 0, y = 0)
+
+        # Enter conferecnce/journal name to insert publicationr  
+        w = Label(insertJournalWindow ,text = "Journal Name", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 50)
+        w1 = Entry(insertJournalWindow, textvariable = name_var_jour).place(x = 75, y = 50)
+
+        # Enter iteration to insert publication  
+        y = Label(insertJournalWindow ,text = "Iterations", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 100)
+        y1 = Entry(insertJournalWindow, textvariable = iteration_var_jour).place(x = 75, y = 100)
+
+        # Enter iteration to insert publication  
+        z = Label(insertJournalWindow ,text = "Volume", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 150)
+        z1 = Entry(insertJournalWindow, textvariable = vol_var_jour).place(x = 75, y = 150)
+
+        aa = Label(insertJournalWindow ,text = "Year", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 200)
+        aa1 = Entry(insertJournalWindow, textvariable = year_var_jour).place(x = 75, y = 200)
+
+        # Enter paper titles to insert publication  
+        bb = Label(insertJournalWindow ,text = "Paper Titles:", font = LabelFont, bg = "#D6FEFF").place(x = 0, y = 250)
+        bb1 = Entry(insertJournalWindow, textvariable = papers_var_jour).place(x = 75, y = 250)
+
+        # Button to insert author provided
+        btn5 = ttk.Button(insertJournalWindow ,text = "Insert Journal", command = lambda: insertJournal( removeSpaces((papers_var_jour.get()).split(",")), (name_var_jour.get()).strip(), iteration_var_jour.get(), year_var_jour.get(), (vol_var_jour.get()).strip() )).place(x = 0, y = 300)
     
     # Reset
     option = 0
@@ -259,11 +296,16 @@ def generateInsertWindow():
     url_var_paper.set("")
     page_num_var_paper.set("")
 
-    papers_var_pub.set("")
-    name_var_pub.set("")
-    iteration_var_pub.set("")
-    location_var_pub.set("")
-    year_var_pub.set("")
+    papers_var_conf.set("")
+    name_var_conf.set("")
+    iteration_var_conf.set("")
+    location_var_conf.set("")
+    year_var_conf.set("")
+
+    papers_var_jour.set("")
+    name_var_jour.set("")
+    iteration_var_jour.set("")
+    year_var_jour.set("")
         
 def insertAuthor(firstname, lastname, paperList, employerList, startyearList, endyearList = []): 
     thisInsert = Insert(Database("rcharnley", "ljfsRYJzLQJv0I0C"))
@@ -284,11 +326,17 @@ def insertPaper(title, firstnameList, lastnameList, publicationList, url, pageNu
         thisInsert._paperPublications(pub)
     thisInsert.insertPaper(title, url, pageNum)
 
-def insertPublication(paperList, name, iteration, location, year):
+def insertConference(paperList, name, iteration, year, location):
     thisInsert = Insert(Database("rcharnley", "ljfsRYJzLQJv0I0C"))
     for paper in paperList:
         thisInsert._authorPapers(paper)
-    thisInsert.insertPublication(name, iteration, location, int(year))
+    thisInsert.insertConference(name, iteration, year, location)
+
+def insertJournal(paperList, name, iteration, year, volume):
+    thisInsert = Insert(Database("rcharnley", "ljfsRYJzLQJv0I0C"))
+    for paper in paperList:
+        thisInsert._authorPapers(paper)
+    thisInsert.insertJournal(name, iteration, year, volume)
 
 
 # Define classes
@@ -361,7 +409,8 @@ Label(window, text = "Select type of insert: ", font = SubTitleFont, bg = "#D6FE
 # Radio Button to decide type of insert 
 Radiobutton(window,text="Author", variable= selection_var, value=1, bg = "#D6FEFF", font = LabelFont).place(x=100,y=375)
 Radiobutton(window,text="Paper", variable= selection_var, value=2, bg = "#D6FEFF", font = LabelFont).place(x=200,y=375)
-Radiobutton(window,text="Publication", variable= selection_var, value=3, bg = "#D6FEFF", font = LabelFont).place(x=300,y=375)
+Radiobutton(window,text="Conference", variable= selection_var, value=3, bg = "#D6FEFF", font = LabelFont).place(x=300,y=375)
+Radiobutton(window,text="Journal", variable= selection_var, value=4, bg = "#D6FEFF", font = LabelFont).place(x=400,y=375)
 
 # Button to submit selection
 btn4 = ttk.Button(window ,text = "Submit", command = generateInsertWindow).place(x = 0, y = 400)
