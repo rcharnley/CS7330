@@ -14,6 +14,7 @@ window.title("Research Papers")
 window.geometry("600x600")
 window.config(bg = "#D6FEFF")
 
+# Function to search based on Entry Inputs
 def search():
     firstname = (firstname_var.get()).strip()
     lastname = (lastname_var.get()).strip()
@@ -22,7 +23,7 @@ def search():
     startyear = int((startyear_var.get()).strip() or 0)
     endyear = int((endyear_var.get()).strip() or 0)
     # [QUERY 1] The program should get the name of a paper and return all relevant info for each paper
-    if title != "":
+    if title != "" and (firstname == "" and lastname == "" and publication == "" and startyear == 0 and endyear == 0):
         print("Search for papers by title " + title)
         mapOfPaperInfo = myQuery.query_paper(title)
         titleResults = Toplevel(window)
@@ -36,7 +37,7 @@ def search():
         buildString.pack()
         titleResults.mainloop()
     # [QUERY 2] The program should get the name of an author (just the name), and list of the papers for that author.
-    if firstname != "" and lastname != "": 
+    if firstname != "" and lastname != "" and (title == "" and publication == "" and startyear == 0 and endyear == 0): 
         print("Search for papers by author " + firstname + " " + lastname)
         listOfPapers = myQuery.query_author(firstname, lastname)
         authorResults = Toplevel(window)
@@ -48,7 +49,7 @@ def search():
         buildString.pack()
         authorResults.mainloop()
     # [QUERY 3] The program should get the name of a publication, and a year range, and list of papers that is published within that range.
-    if publication != "" and startyear != 0 and endyear != 0: 
+    if publication != "" and startyear != 0 and endyear != 0 and (firstname == "" and lastname == "" and title == ""): 
         listOfPapers = myQuery.query_publication(publication, startyear, endyear)
         print("Search for papers by publication " + publication + " between the years of " + str(startyear) + " and " + str(endyear))
         publicationResults = Toplevel(window)
@@ -69,7 +70,11 @@ def search():
 def search_matching_name(): 
     firstname = (firstname_var.get()).strip()
     lastname = (lastname_var.get()).strip()
-    if firstname != "" and lastname != "": 
+    title = (title_var.get()).strip()
+    publication = (publication_var.get()).strip()
+    startyear = int((startyear_var.get()).strip() or 0)
+    endyear = int((endyear_var.get()).strip() or 0)
+    if firstname != "" and lastname != "" and (title == "" and publication == "" and startyear == 0 and endyear == 0): 
         print("Search for papers by author " + firstname + " " + lastname + " who may share a name with another")
         listOfPapers = myBonus.query_same_name_authors(firstname, lastname)
         matchingNameResults = Toplevel(window)
@@ -86,7 +91,11 @@ def search_matching_name():
 def search_co_authors():
     firstname = (firstname_var.get()).strip()
     lastname = (lastname_var.get()).strip()
-    if firstname != "" and lastname != "": 
+    title = (title_var.get()).strip()
+    publication = (publication_var.get()).strip()
+    startyear = int((startyear_var.get()).strip() or 0)
+    endyear = int((endyear_var.get()).strip() or 0)
+    if firstname != "" and lastname != "" and (title == "" and publication == "" and startyear == 0 and endyear == 0): 
         print("Search for Co-Authors for " + firstname + " " + lastname + ", level 0-3")
         listOfPapers = myBonus.query_co_author(firstname, lastname)
         levelsString = myBonus.buildLevelListString()

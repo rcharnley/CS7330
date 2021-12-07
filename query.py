@@ -80,7 +80,6 @@ class Query:
             filter = {}
 
         results = publications_collection.find(filter)
-        print(results)
         publications = []
         papers = []
         for publication in results:
