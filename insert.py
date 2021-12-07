@@ -110,7 +110,7 @@ class Insert:
         publication_dict["year"] = year
         publication_dict["iteration"] = iteration
         publication_dict["journal_details"] = {}
-        if volume:
+        if volume and len(volume):
             publication_dict["journal_details"]["volume"] = volume
         publication_dict["papers"] = self.papers
 
