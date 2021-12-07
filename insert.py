@@ -103,13 +103,36 @@ class Insert:
         x = paper_collection.insert_one(papers_dict)
         return x.acknowledged
 
-    def insertPublication(self, name, iteration, location, year):
+
+    def insertJournal(self, name, iteration, year, volume=None):
         publication_dict = {}
         publication_dict["name"] = name
-        publication_dict["year"] = 2020
+        publication_dict["year"] = year
+        publication_dict["iteration"] = iteration
+        publication_dict["journal_details"] = {}
+        if volume:
+            publication_dict["journal_details"]["volume"] = volume
+        publication_dict["papers"] = self.papers
+
+        # get publications collection
+        publications_collection = self.db.getPublicationsCollection()
+
+        # insert created publications dict into publications collection
+        for x in publications_collection.find({}):
+            x.pop("_id")
+            if x == publication_dict:
+                return "Error, a Publications document the same as this already exists in this Database.  Please insert another unique document"
+
+        x = publications_collection.insert_one(publication_dict)
+        return x.acknowledged
+
+    def insertConference(self, name, iteration, year, location):
+        publication_dict = {}
+        publication_dict["name"] = name
+        publication_dict["year"] = year
         publication_dict["iteration"] = iteration
         publication_dict["conference_details"] = {"location": location}
-        publication_dict["Papers"] = self.papers
+        publication_dict["papers"] = self.papers
 
         # get publications collection
         publications_collection = self.db.getPublicationsCollection()
@@ -132,17 +155,19 @@ if __name__=="__main__":
 
     # insert author
     # myInsert._authorAffiliation("Raytheon", "1999")
-    # myInsert._authorPapers("Paper2")
+    myInsert._authorPapers("Paper2")
     # print(myInsert.insertAuthor("UNIQUE2", "Wisniewski"))
 
     # insert paper
-    # myInsert._paperAuthors("Mike", "Wisniewski")
-    # myInsert._paperAuthors("Rosemary", "Charnley")
-    # myInsert._paperAuthors("George", "Sammit")
-    # myInsert._paperPublications("CS7330")
-    # myInsert._paperPublications("SMU")
-    # myInsert.insertPaper("CS7330 Project Paper", "Google", 4)
+    myInsert._paperAuthors("Mike", "Wisniewski")
+    myInsert._paperAuthors("Rosemary", "Charnley")
+    myInsert._paperAuthors("George", "Sammit")
+    myInsert._paperPublications("CS7330")
+    myInsert._paperPublications("SMU")
+    myInsert.insertPaper("CS7330 Project Paper", "Google", 4)
 
     # insert publication
     # myInsert._authorPapers("Paper 1, Paper 2")
-    # print(myInsert.insertPublication("Some Journal", 20, "Dallas, TX", 2019))
+    #print(myInsert.insertJournal("Some Journal1", "03", 2019))
+    #print(myInsert.insertJournal("Some Journal1", "04", 2019, "2"))
+    print(myInsert.insertConference("Some Conference1", "21st", 2019, "Dallas, TX"))
