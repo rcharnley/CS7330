@@ -24,7 +24,7 @@ class Bonus:
     def query_same_name_authors(self, firstName, lastName):
         authors_collection = self.db.getAuthorsCollection()
         # query the title of the paper and return the base information
-        author_filter = {"First Name": firstName, "Last Name": lastName}
+        author_filter = {"first_name": firstName, "last_name": lastName}
         author_cursor = authors_collection.find(author_filter)
 
         # Store papers as list and separate by latest affiliation
@@ -34,9 +34,9 @@ class Bonus:
             listOfPapers = []
             listOfAuthors.append(firstName)
             listOfAuthors.append(lastName)
-            listOfAuthors.append(document["Affiliation"][-1]["Name"])
+            listOfAuthors.append(document["affiliation"][-1]["name"])
 
-            for paper in document['Papers']: 
+            for paper in document['papers']: 
                 listOfPapers.append(paper)
             
             listOfAuthors.append(listOfPapers)
@@ -67,8 +67,8 @@ class Bonus:
         coAuthorsMap = {}
         for paper in listOfPapers: 
             paperInfo = self.query.query_paper(title = paper)
-            coAuthors = self.onlyCoAuthors(paperInfo.get("Author"), firstName, lastName)
-            coAuthorsMap.update({paperInfo.get("Title"): coAuthors})
+            coAuthors = self.onlyCoAuthors(paperInfo.get("author"), firstName, lastName)
+            coAuthorsMap.update({paperInfo.get("title"): coAuthors})
         return coAuthorsMap
 
     # helper function
@@ -143,12 +143,19 @@ class Bonus:
         buildString = "Level 0 Co-Authors\n" +"-------------------------------------------\n" + str(self.level0) + "\n" + "Level 1 Co-Authors\n" + "-------------------------------------------\n" +str(self.level1)+"\n"+"Level 2 Co-Authors\n"+"-------------------------------------------\n" + str(self.level2)+"\n"+"Level 3 Co-Authors\n" + "-------------------------------------------\n" + str(self.level3)
         return buildString
 
-# [Test Bonus Class] returns and prints bonus results for Bonus class
-'''
-myDB = Database("rcharnley", "ljfsRYJzLQJv0I0C")
-myQuery = Query(myDB)
-myBonus = Bonus(myDB, myQuery)
-myBonus.query_same_name_authors("Martin", "Grohe")
-myBonus.query_co_author("Peter", "Lindner")
-print(myBonus.buildLevelListString())
-'''
+if __name__=="__main__":
+
+    # [Test Bonus Class] returns and prints bonus results for Bonus class
+    '''
+    myDB = Database("rcharnley", "ljfsRYJzLQJv0I0C")
+    myQuery = Query(myDB)
+    myBonus = Bonus(myDB, myQuery)
+    myBonus.query_same_name_authors("Martin", "Grohe")
+    myBonus.query_co_author("Peter", "Lindner")
+    print(myBonus.buildLevelListString())
+    '''
+
+    myDB = Database("rcharnley", "ljfsRYJzLQJv0I0C")
+    myQuery = Query(myDB)
+    myBonus = Bonus(myDB, myQuery)
+    print(myBonus.query_same_name_authors("Mike", "Wisniewski"))
