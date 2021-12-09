@@ -153,9 +153,10 @@ if __name__=="__main__":
     myBonus.query_same_name_authors("Martin", "Grohe")
     myBonus.query_co_author("Peter", "Lindner")
     print(myBonus.buildLevelListString())
-    '''
+    
 
     myDB = Database("rcharnley", "ljfsRYJzLQJv0I0C")
     myQuery = Query(myDB)
     myBonus = Bonus(myDB, myQuery)
     print(myBonus.query_same_name_authors("Mike", "Wisniewski")[1])
+    '''
