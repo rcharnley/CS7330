@@ -75,7 +75,7 @@ def search_matching_name():
     startyear = int((startyear_var.get()).strip() or 0)
     endyear = int((endyear_var.get()).strip() or 0)
     if firstname != "" and lastname != "" and (title == "" and publication == "" and startyear == 0 and endyear == 0): 
-        print("Search for papers by author " + firstname + " " + lastname + " who may share a name with another")
+        print("Search for details by author " + firstname + " " + lastname + " who may share a name with another")
         listOfPeople = myBonus.query_same_name_authors(firstname, lastname)
         matchingNameResults = Toplevel(window)
         matchingNameResults.title("Paper Results for Search by Author " + firstname + " " + lastname)
