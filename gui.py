@@ -317,7 +317,18 @@ def insertAuthor(firstname, lastname, paperList, employerList, startyearList, en
         index = index + 1
     for paper in paperList: 
         thisInsert._authorPapers(paper)
-    thisInsert.insertAuthor(firstname, lastname)
+    insert = thisInsert.insertAuthor(firstname, lastname)
+    if (isinstance(insert, str)):
+        errorWindow = Toplevel(window)
+        errorWindow.title("Error")
+        errorWindow.geometry("600x100")
+        errorWindow.config(bg = "#D6FEFF")
+        buildString = Text(errorWindow)
+        buildString.config(bg = "#D6FEFF")
+        buildString.insert(END, "Error! This Author already exists.\nClose this window and try again.\n")
+        buildString.pack()
+
+
 
 def insertPaper(title, firstnameList, lastnameList, publicationList, url, pageNum): 
     thisInsert = Insert(Database("rcharnley", "ljfsRYJzLQJv0I0C"))
@@ -325,19 +336,46 @@ def insertPaper(title, firstnameList, lastnameList, publicationList, url, pageNu
         thisInsert._paperAuthors(first, last)
     for pub in publicationList:
         thisInsert._paperPublications(pub)
-    thisInsert.insertPaper(title, url, pageNum)
+    insert = thisInsert.insertPaper(title, url, pageNum)
+    if (isinstance(insert, str)):
+        errorWindow = Toplevel(window)
+        errorWindow.title("Error")
+        errorWindow.geometry("600x100")
+        errorWindow.config(bg = "#D6FEFF")
+        buildString = Text(errorWindow)
+        buildString.config(bg = "#D6FEFF")
+        buildString.insert(END, "Error! This Paper already exists.\nClose this window and try again.\n")
+        buildString.pack()
 
 def insertConference(paperList, name, iteration, year, location):
     thisInsert = Insert(Database("rcharnley", "ljfsRYJzLQJv0I0C"))
     for paper in paperList:
         thisInsert._authorPapers(paper)
-    thisInsert.insertConference(name, iteration, year, location)
+    insert = thisInsert.insertConference(name, iteration, year, location)
+    if (isinstance(insert, str)):
+        errorWindow = Toplevel(window)
+        errorWindow.title("Error")
+        errorWindow.geometry("600x100")
+        errorWindow.config(bg = "#D6FEFF")
+        buildString = Text(errorWindow)
+        buildString.config(bg = "#D6FEFF")
+        buildString.insert(END, "Error! This Conference already exists.\nClose this window and try again.\n")
+        buildString.pack()
 
 def insertJournal(paperList, name, iteration, year, volume):
     thisInsert = Insert(Database("rcharnley", "ljfsRYJzLQJv0I0C"))
     for paper in paperList:
         thisInsert._authorPapers(paper)
-    thisInsert.insertJournal(name, iteration, year, volume)
+    insert = thisInsert.insertJournal(name, iteration, year, volume)
+    if (isinstance(insert, str)):
+        errorWindow = Toplevel(window)
+        errorWindow.title("Error")
+        errorWindow.geometry("600x100")
+        errorWindow.config(bg = "#D6FEFF")
+        buildString = Text(errorWindow)
+        buildString.config(bg = "#D6FEFF")
+        buildString.insert(END, "Error! This Journal already exists.\nClose this window and try again.\n")
+        buildString.pack()
 
 
 # Define classes
