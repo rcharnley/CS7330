@@ -158,4 +158,4 @@ if __name__=="__main__":
     myDB = Database("rcharnley", "ljfsRYJzLQJv0I0C")
     myQuery = Query(myDB)
     myBonus = Bonus(myDB, myQuery)
-    print(myBonus.query_same_name_authors("Mike", "Wisniewski"))
+    print(myBonus.query_same_name_authors("Mike", "Wisniewski")[1])

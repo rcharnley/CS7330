@@ -21,9 +21,6 @@ class Insert:
         return self.affiliation
 
     def _authorPapers(self, paper):
-        # clear list
-        self.papers.clear()
-
         # append values
         self.papers.append(paper)
 
@@ -151,23 +148,23 @@ if __name__=="__main__":
     from pymongo import MongoClient
 
     # initialize insert
-    myInsert = Insert(Database("mwisniewski", "nzMIpgjB96hUS2vO"))
+    # myInsert = Insert(Database("mwisniewski", "nzMIpgjB96hUS2vO"))
 
     # insert author
     # myInsert._authorAffiliation("Raytheon", "1999")
-    myInsert._authorPapers("Paper2")
+    # myInsert._authorPapers("Paper2")
     # print(myInsert.insertAuthor("UNIQUE2", "Wisniewski"))
 
     # insert paper
-    myInsert._paperAuthors("Mike", "Wisniewski")
-    myInsert._paperAuthors("Rosemary", "Charnley")
-    myInsert._paperAuthors("George", "Sammit")
-    myInsert._paperPublications("CS7330")
-    myInsert._paperPublications("SMU")
-    myInsert.insertPaper("CS7330 Project Paper", "Google", 4)
+    # myInsert._paperAuthors("Mike", "Wisniewski")
+    # myInsert._paperAuthors("Rosemary", "Charnley")
+    # myInsert._paperAuthors("George", "Sammit")
+    # myInsert._paperPublications("CS7330")
+    # myInsert._paperPublications("SMU")
+    # myInsert.insertPaper("CS7330 Project Paper", "Google", 4)
 
     # insert publication
     # myInsert._authorPapers("Paper 1, Paper 2")
-    #print(myInsert.insertJournal("Some Journal1", "03", 2019))
-    #print(myInsert.insertJournal("Some Journal1", "04", 2019, "2"))
-    print(myInsert.insertConference("Some Conference1", "21st", 2019, "Dallas, TX"))
+    # print(myInsert.insertJournal("Some Journal1", "03", 2019))
+    # print(myInsert.insertJournal("Some Journal1", "04", 2019, "2"))
+    # print(myInsert.insertConference("Some Conference1", "21st", 2019, "Dallas, TX"))
