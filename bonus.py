@@ -67,8 +67,8 @@ class Bonus:
         coAuthorsMap = {}
         for paper in listOfPapers: 
             paperInfo = self.query.query_paper(title = paper)
-            coAuthors = self.onlyCoAuthors(paperInfo.get("author"), firstName, lastName)
-            coAuthorsMap.update({paperInfo.get("title"): coAuthors})
+            coAuthors = self.onlyCoAuthors(paperInfo.get("Author"), firstName, lastName)
+            coAuthorsMap.update({paperInfo.get("Title"): coAuthors})
         return coAuthorsMap
 
     # helper function
@@ -145,15 +145,15 @@ class Bonus:
 
 if __name__=="__main__":
 
+
     # [Test Bonus Class] returns and prints bonus results for Bonus class
     '''
     myDB = Database("rcharnley", "ljfsRYJzLQJv0I0C")
     myQuery = Query(myDB)
     myBonus = Bonus(myDB, myQuery)
-    myBonus.query_same_name_authors("Martin", "Grohe")
+    # myBonus.query_same_name_authors("Martin", "Grohe")
     myBonus.query_co_author("Peter", "Lindner")
     print(myBonus.buildLevelListString())
-    
 
     myDB = Database("rcharnley", "ljfsRYJzLQJv0I0C")
     myQuery = Query(myDB)
